@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Print-specific styles */
+@media print {
+  body {
+    visibility: visible;
+    background: white;
+    color: black;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    border: none;
+  }
+  
+  .break-inside-avoid-page {
+    break-inside: avoid;
+  }
+  
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+}
