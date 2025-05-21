@@ -29,16 +29,18 @@ export default function Page() {
   const [summaryChunks, setSummaryChunks] = useState([]);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef();
-
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode !== null) {
-      return savedMode === 'true';
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return true;
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedMode = localStorage.getItem('darkMode');
+      if (savedMode !== null) {
+        setDarkMode(savedMode === 'true');
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setDarkMode(true);
+      }
     }
-    return false;
-  });
+  }, []);
+
 
   // Apply dark mode to <body> and store in localStorage
   useEffect(() => {
