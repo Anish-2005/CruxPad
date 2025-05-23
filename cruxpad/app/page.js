@@ -223,95 +223,193 @@ Text: ${text.substring(0, 300000)}`;
     }
   }
 
-  // Export as PDF
-  function exportPDF() {
-    if (summaryChunks.length === 0) {
-      alert('No content to export!');
-      return;
-    }
-
-    try {
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-
-      const margin = 10;
-      const boxPadding = 3;
-      const boxMargin = 2;
-      const fontSize = 6;
-      const cols = 6;
-      const rows = 12;
-      const boxWidth = (pageWidth - margin * 2 - boxMargin * (cols - 1)) / cols;
-      const boxHeight = (pageHeight - margin * 2 - boxMargin * (rows - 1)) / rows;
-
-      let currentPage = 0;
-      let currentRow = 0;
-      let currentCol = 0;
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(fontSize);
-
-      // Fill first page background if darkMode
-      if (darkMode) {
-        doc.setFillColor('#000000');
-        doc.rect(0, 0, pageWidth, pageHeight, 'F');
-      }
-
-      summaryChunks.forEach((chunk, i) => {
-        // Calculate position
-        const x = margin + (currentCol * (boxWidth + boxMargin));
-        const y = margin + (currentRow * (boxHeight + boxMargin));
-
-        const colors = darkMode ? darkColors : lightColors;
-        const bgColor = colors[i % colors.length];
-        const textColor = darkMode ? '#eee' : '#111';
-
-        // Draw box background
-        doc.setFillColor(bgColor);
-        doc.rect(x, y, boxWidth, boxHeight, 'F');
-
-        // Draw border
-        doc.setDrawColor(darkMode ? '#666' : '#bbb');
-        doc.setLineWidth(0.2);
-        doc.rect(x, y, boxWidth, boxHeight);
-
-        // Add text (centered)
-        doc.setTextColor(textColor);
-        const textLines = doc.splitTextToSize(chunk, boxWidth - 4);
-        const textHeight = textLines.length * (fontSize * 1.1);
-        const textY = y + (boxHeight - textHeight) / 2 + fontSize;
-
-        textLines.forEach((line, lineIndex) => {
-          doc.text(line, x + boxWidth / 2, textY + (lineIndex * (fontSize * 1.1)), null, 'center');
+function formatGeminiText(text) {
+  // Split into sections based on common heading patterns
+  const sections = text.split(/\n\s*\n|\n(?=\*{2}|[A-Z][A-Za-z ]+:|[IVX]+\.)/);
+  
+  let formattedOutput = [];
+  
+  sections.forEach(section => {
+    // Clean up the section
+    section = section.trim();
+    if (!section) return;
+    
+    // Check if this is a heading
+    const isHeading = section.match(/^\*{2}.+\*{2}$|^[A-Z][A-Za-z ]+:|^[IVX]+\./);
+    
+    if (isHeading) {
+      // Major heading (like "**Objective**" or "I. Introduction")
+      if (section.match(/^\*{2}.+\*{2}$|^[IVX]+\./)) {
+        formattedOutput.push({
+          type: 'major-heading',
+          text: section.replace(/\*{2}/g, '')
         });
-
-        // Update position
-        currentCol++;
-        if (currentCol >= cols) {
-          currentCol = 0;
-          currentRow++;
-          if (currentRow >= rows) {
-            currentRow = 0;
-            doc.addPage();
-
-            // Fill new page background if darkMode
-            if (darkMode) {
-              doc.setFillColor('#000000');
-              doc.rect(0, 0, pageWidth, pageHeight, 'F');
-            }
-
-            currentPage++;
-          }
+      } 
+      // Subheading (like "Approach:")
+      else {
+        formattedOutput.push({
+          type: 'subheading', 
+          text: section
+        });
+      }
+    } 
+    // Regular content
+    else {
+      // Split into paragraphs if needed
+      const paragraphs = section.split(/\n\s*/);
+      paragraphs.forEach(para => {
+        if (para.trim()) {
+          formattedOutput.push({
+            type: 'paragraph',
+            text: para
+          });
         }
       });
-
-      doc.save('condensed-summary.pdf');
-    } catch (err) {
-      console.error('PDF export error:', err);
-      alert(`Failed to generate PDF: ${err.message}`);
     }
+  });
+  
+  return formattedOutput;
+}
+
+function exportPDF() {
+  if (summaryChunks.length === 0) {
+    alert('No content to export!');
+    return;
   }
 
+  try {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Layout settings
+    const margin = 40;
+    const colWidth = (pageWidth - margin * 2) / 3;
+    const colGap = 20;
+    
+    // Theme-based styling
+    const theme = {
+      light: {
+        background: '#f8fafc', // Light blue-50 background
+        text: '#1e293b', // Slate-800
+        heading: '#4f46e5', // Indigo-600
+        subheading: '#7c3aed', // Purple-600
+        accent: '#db2777', // Pink-600
+        cardBg: '#ffffff',
+        cardBorder: '#e2e8f0'
+      },
+      dark: {
+        background: '#0f172a', // Slate-900
+        text: '#e2e8f0', // Slate-200
+        heading: '#a5b4fc', // Indigo-300
+        subheading: '#c4b5fd', // Purple-300
+        accent: '#f472b6', // Pink-400
+        cardBg: '#1e293b',
+        cardBorder: '#334155'
+      }
+    };
+
+    const currentTheme = darkMode ? theme.dark : theme.light;
+
+    // Initialize document with theme
+    doc.setFillColor(currentTheme.background);
+    doc.rect(0, 0, pageWidth, pageHeight, 'F');
+    doc.setFont('helvetica');
+
+    let currentCol = 0;
+    let yPos = margin;
+    let xPos = margin;
+
+    // Process each chunk with theme-appropriate formatting
+    summaryChunks.forEach(chunk => {
+      // Split the text into lines and process each line
+      const lines = chunk.split('\n');
+      
+      lines.forEach(line => {
+        line = line.trim();
+        if (!line) return;
+
+        let style = {
+          size: 10,
+          color: currentTheme.text,
+          spacing: 6,
+          font: 'helvetica'
+        };
+
+        // Determine styling based on content
+        if (line.match(/^\*[A-Za-z].+\*$/)) { // Section title (e.g., *I. Core Objectives*)
+          style = {
+            size: 16,
+            color: currentTheme.heading,
+            spacing: 15,
+            font: 'helvetica-bold'
+          };
+          line = line.replace(/\*/g, '');
+        } 
+        else if (line.match(/^[A-Z][A-Za-z ]+:$/)) { // Subsection (e.g., "Month 1:")
+          style = {
+            size: 14,
+            color: currentTheme.subheading,
+            spacing: 12,
+            font: 'helvetica-bold'
+          };
+        }
+        else if (line.match(/\*\*.+\*\*/)) { // Bold text (e.g., **Core Objective**)
+          style = {
+            size: 10,
+            color: currentTheme.accent,
+            spacing: 8,
+            font: 'helvetica-bold'
+          };
+          line = line.replace(/\*\*/g, '');
+        }
+
+        // Set font properties
+        doc.setFontSize(style.size);
+        doc.setTextColor(style.color);
+        doc.setFont(style.font);
+
+        // Split text to fit column width
+        const textLines = doc.splitTextToSize(line, colWidth - 10);
+        const neededHeight = textLines.length * (style.size * 1.2);
+
+        // Check if we need new column/page
+        if (yPos + neededHeight > pageHeight - margin) {
+          currentCol++;
+          yPos = margin;
+          
+          if (currentCol >= 3) {
+            currentCol = 0;
+            doc.addPage();
+            yPos = margin;
+            // Apply theme to new page
+            doc.setFillColor(currentTheme.background);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+          }
+        }
+        
+        xPos = margin + (currentCol * (colWidth + colGap));
+        
+        // Add the text
+        textLines.forEach((textLine, i) => {
+          doc.text(textLine, xPos, yPos + (i * style.size * 1.2));
+        });
+        
+        yPos += neededHeight + style.spacing;
+      });
+    });
+
+    // Add footer with watermark
+    doc.setFontSize(8);
+    doc.setTextColor(darkMode ? '#94a3b8' : '#64748b');
+    doc.text('Generated by CruxPad Cheatsheet', pageWidth - margin, pageHeight - 20, null, null, 'right');
+
+    doc.save('cruxpad-cheatsheet.pdf');
+  } catch (err) {
+    console.error('PDF export error:', err);
+    alert(`Failed to generate PDF: ${err.message}`);
+  }
+}
 
   return (
     <div className={`min-h-screen relative overflow-hidden transition-all duration-700 ${darkMode
