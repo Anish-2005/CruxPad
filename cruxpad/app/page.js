@@ -1,13 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
-import { jsPDF } from 'jspdf';
 import { FileText, Download, Moon, Sun, Upload, Sparkles } from 'lucide-react';
 import { ErrorBoundary } from 'react-error-boundary';
-
-// Set PDF.js worker path
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 function ErrorFallback({ error, resetErrorBoundary, darkMode }) {
   return (
@@ -137,6 +132,8 @@ Text: ${text.substring(0, 300000)}`;
   async function extractTextFromPDF(file) {
     try {
       setLoading(true);
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       let fullText = '';
@@ -277,8 +274,10 @@ function exportPDF() {
     return;
   }
 
-  try {
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  (async () => {
+    try {
+      const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -409,6 +408,7 @@ function exportPDF() {
     console.error('PDF export error:', err);
     alert(`Failed to generate PDF: ${err.message}`);
   }
+  })();
 }
 
   return (
