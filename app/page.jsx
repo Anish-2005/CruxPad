@@ -81,7 +81,7 @@ export default function Page() {
   const handleExportPDF = () => exportPDF(summaryChunks, darkMode);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden transition-all duration-700 ${darkMode
+    <div className={`min-h-screen relative overflow-hidden transition-all duration-700 ${darkMode ? 'dark dark-scrollbars' : 'light-scrollbars'} ${darkMode
       ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'
       : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'
       }`}>

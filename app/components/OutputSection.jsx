@@ -44,10 +44,7 @@ export function OutputSection({ darkMode, summaryChunks, onExportText, onExportP
             Condensed Cheatsheet
           </h2>
 
-          <div className="mb-6 max-h-96 overflow-auto rounded-xl" style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: darkMode ? '#4c1d95 #1f2937' : '#6366f1 #e5e7eb'
-          }}>
+          <div className={`mb-6 max-h-96 overflow-auto rounded-xl ${darkMode ? 'dark-scrollbars' : 'light-scrollbars'}`}>
             <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
               {summaryChunks.length === 0 && (
                 <div className={`text-center py-12 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
