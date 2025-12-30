@@ -1,0 +1,26 @@
+# Robots.txt for CruxPad
+# Allow all crawlers to access all content
+User-agent: *
+Allow: /
+
+# Disallow access to API routes (if any)
+Disallow: /api/
+
+# Disallow access to admin areas (if any)
+Disallow: /admin/
+
+# Allow major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Sitemap location
+Sitemap: https://cruxpad.vercel.app/sitemap.xml

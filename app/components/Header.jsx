@@ -1,4 +1,4 @@
-import { Sun, Moon, Sparkles } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 
 export function Header({ darkMode, onToggleDarkMode }) {
   return (
@@ -26,9 +26,10 @@ ${darkMode
             : 'bg-white/40 border border-white/30'
             } shadow-2xl`}
         >
-          <Sparkles
-            className={`w-6 h-6 sm:w-8 sm:h-8 ${darkMode ? 'text-purple-300' : 'text-indigo-600'
-              }`}
+          <img
+            src="/cruxpad.png"
+            alt="CruxPad Logo"
+            className="w-10 h-10 sm:w-8 sm:h-8 object-contain"
           />
         </div>
 
