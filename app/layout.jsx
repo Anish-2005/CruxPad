@@ -10,6 +10,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="h-full">
       <head>
         <link rel="icon" href="/cruxpad.png" sizes="any" />
+        <script src="https://js.puter.com/v2/"></script>
       </head>
       <body className="min-h-screen bg-gray-50 print:bg-white">
         {children}

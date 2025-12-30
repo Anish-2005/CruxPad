@@ -42,8 +42,8 @@ export default function Page() {
     document.body.classList.toggle('dark', darkMode);
     localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
-  // Process text with Gemini API
-  async function processWithGemini(text) {
+  // Process text with AI API
+  async function processWithAI(text) {
     try {
       setLoading(true);
       const prompt = `Please analyze the following text and generate a slightly detailed cheatsheet with these guidelines:
@@ -57,40 +57,22 @@ export default function Page() {
 Text: ${text.substring(0, 300000)}`;
 
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GEMINI_BASE_URL}?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }]
-        }),
+      const response = await puter.ai.chat(prompt, {
+        model: 'gemini-3-pro-preview'
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Full Gemini response:', data); // Debug log
+      console.log('Full Puter response:', response); // Debug log
 
       // More flexible response extraction
       let resultText = '';
-      if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        resultText = data.candidates[0].content.parts[0].text;
-      } else if (typeof data === 'string') {
-        resultText = data;
+      if (typeof response === 'string') {
+        resultText = response;
+      } else if (response?.text) {
+        resultText = response.text;
+      } else if (response?.message?.content) {
+        resultText = response.message.content;
       } else {
-        // Fallback: try to stringify the first part we find
-        const firstPart = data.candidates?.[0]?.content?.parts?.[0] ||
-          data.choices?.[0]?.message?.content ||
-          data.result ||
-          JSON.stringify(data).substring(0, 1000);
-        resultText = typeof firstPart === 'string' ? firstPart : JSON.stringify(firstPart);
+        resultText = JSON.stringify(response);
       }
 
       // More flexible content extraction
@@ -120,8 +102,8 @@ Text: ${text.substring(0, 300000)}`;
 
       return chunks;
     } catch (err) {
-      console.error('Gemini processing error:', err);
-      alert(`Error processing with Gemini: ${err.message}`);
+      console.error('AI processing error:', err);
+      alert(`Error processing with AI: ${err.message}`);
       return ['Failed to generate content. Please try again.'];
     } finally {
       setLoading(false);
@@ -132,19 +114,20 @@ Text: ${text.substring(0, 300000)}`;
   async function extractTextFromPDF(file) {
     try {
       setLoading(true);
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let fullText = '';
+      const formData = new FormData();
+      formData.append('file', file);
 
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const strings = content.items.map((item) => item.str);
-        fullText += strings.join(' ') + '\n\n';
+      const response = await fetch('/api/extract-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to extract PDF text');
       }
-      return fullText;
+
+      const data = await response.json();
+      return data.text;
     } catch (error) {
       console.error('PDF extraction error:', error);
       alert('Error processing PDF. Please try another file.');
@@ -173,7 +156,7 @@ Text: ${text.substring(0, 300000)}`;
       }
 
       setInputText(text);
-      const chunks = await processWithGemini(text);
+      const chunks = await processWithAI(text);
       setSummaryChunks(chunks);
 
     } catch (err) {
@@ -191,7 +174,7 @@ Text: ${text.substring(0, 300000)}`;
     setInputText(text);
 
     if (text.length > 50) { // Lowered threshold for processing
-      const chunks = await processWithGemini(text);
+      const chunks = await processWithAI(text);
       setSummaryChunks(chunks);
     } else {
       setSummaryChunks([]);
@@ -220,7 +203,7 @@ Text: ${text.substring(0, 300000)}`;
     }
   }
 
-function formatGeminiText(text) {
+function formatAIText(text) {
   // Split into sections based on common heading patterns
   const sections = text.split(/\n\s*\n|\n(?=\*{2}|[A-Z][A-Za-z ]+:|[IVX]+\.)/);
   
