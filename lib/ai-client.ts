@@ -6,10 +6,18 @@ import type {
   StudySections,
 } from "@/lib/types";
 
-const MODEL_PRIORITY = [
-  process.env.NEXT_PUBLIC_PUTER_MODEL || "openai/gpt-5.2-pro",
-  "openai/gpt-5.2-chat",
-  "claude-sonnet-4",
+const MODEL_OVERRIDE = process.env.NEXT_PUBLIC_PUTER_MODEL || "";
+
+// Prefer highest-quality models first if available in the current Puter account.
+const MODEL_HINTS = [
+  "claude-opus",
+  "o3-pro",
+  "gpt-5",
+  "claude-sonnet",
+  "gpt-4.1",
+  "gpt-4o",
+  "gemini-2.5-pro",
+  "gemini-2.0-pro",
   "gpt-5-nano",
 ];
 
@@ -253,12 +261,62 @@ async function waitForPuter(timeoutMs = 12_000) {
   throw new Error("Puter SDK failed to load. Refresh and try again.");
 }
 
-async function runWithModel(prompt: string, model: string) {
-  const puter = await waitForPuter();
-  return puter.ai.chat(prompt, {
-    model,
-    temperature: 0.2,
-  });
+function modelScore(modelId: string) {
+  const id = modelId.toLowerCase();
+  for (let i = 0; i < MODEL_HINTS.length; i += 1) {
+    if (id.includes(MODEL_HINTS[i])) {
+      return MODEL_HINTS.length - i;
+    }
+  }
+  return 0;
+}
+
+async function getAvailableModelIds(puter: any): Promise<string[]> {
+  if (typeof puter?.ai?.listModels !== "function") {
+    return [];
+  }
+
+  try {
+    const models = await puter.ai.listModels();
+    if (!Array.isArray(models)) {
+      return [];
+    }
+    return models
+      .map((model: any) => cleanText(model?.id))
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function chooseModelCandidates(availableModels: string[]) {
+  const availableSet = new Set(availableModels);
+  const candidates: (string | null)[] = [];
+
+  if (MODEL_OVERRIDE && availableSet.has(MODEL_OVERRIDE)) {
+    candidates.push(MODEL_OVERRIDE);
+  }
+
+  const ranked = [...availableModels]
+    .sort((a, b) => modelScore(b) - modelScore(a))
+    .filter((id) => modelScore(id) > 0);
+
+  for (const model of ranked) {
+    if (!candidates.includes(model)) {
+      candidates.push(model);
+    }
+  }
+
+  // Final fallback: let Puter pick its default model.
+  candidates.push(null);
+  return candidates;
+}
+
+async function runWithCandidate(prompt: string, puter: any, candidate: string | null) {
+  const options = candidate
+    ? { model: candidate, temperature: 0.2 }
+    : { temperature: 0.2 };
+  return puter.ai.chat(prompt, options);
 }
 
 export async function generateStudyPackWithPuter(
@@ -266,11 +324,15 @@ export async function generateStudyPackWithPuter(
   mode: StudyMode
 ): Promise<GeneratedCheatsheet> {
   const prompt = buildPrompt(text, mode);
+  const puter = await waitForPuter();
+  const availableModels = await getAvailableModelIds(puter);
+  const candidates = chooseModelCandidates(availableModels);
 
-  let lastError: unknown = null;
-  for (const model of MODEL_PRIORITY) {
+  const errors: string[] = [];
+
+  for (const candidate of candidates) {
     try {
-      const response = await runWithModel(prompt, model);
+      const response = await runWithCandidate(prompt, puter, candidate);
       const rawText = extractText(response);
       const parsed = parseJsonFromModel(rawText);
       const sanitized = sanitizePayload(parsed, mode);
@@ -287,15 +349,17 @@ export async function generateStudyPackWithPuter(
       }
 
       return sanitized;
-    } catch (error) {
-      lastError = error;
+    } catch (error: any) {
+      const label = candidate || "default-model";
+      const message = cleanText(error?.message || String(error), "Unknown error");
+      errors.push(`${label}: ${message}`);
     }
   }
 
+  const authHint =
+    "If this is your first Puter request, complete the Puter auth prompt and retry.";
   throw new Error(
-    lastError instanceof Error
-      ? lastError.message
-      : "Puter generation failed for all configured models."
+    `Puter generation failed across available models. ${authHint} Details: ${errors.join(" | ")}`
   );
 }
 

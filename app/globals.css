@@ -34,7 +34,7 @@ body {
 }
 
 body {
-  font-family: var(--font-body), sans-serif;
+  font-family: "Aptos", "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
   background:
     radial-gradient(900px 500px at 2% -10%, #d6e7ff 0%, transparent 55%),
     radial-gradient(700px 450px at 98% 0%, #d7f4ee 0%, transparent 50%),
@@ -46,7 +46,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display), sans-serif;
+  font-family: "Aptos Display", "Trebuchet MS", "Segoe UI", sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -146,6 +146,15 @@ a {
   background-image: linear-gradient(to right, rgba(100, 123, 163, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(100, 123, 163, 0.12) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 ::-webkit-scrollbar {
