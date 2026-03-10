@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 import Providers from "@/app/providers";
 import "./globals.css";
@@ -18,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-slate-100 text-slate-900">
+        <Script src="https://js.puter.com/v2/" strategy="beforeInteractive" />
         <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
-
