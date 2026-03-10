@@ -2,190 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Scrollbars for Light Theme */
-.light-scrollbars {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(99, 102, 241) rgb(241, 245, 249);
+:root {
+  color-scheme: light;
 }
 
-.light-scrollbars::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+* {
+  box-sizing: border-box;
 }
 
-.light-scrollbars::-webkit-scrollbar-track {
-  background: rgb(241, 245, 249);
-  border-radius: 4px;
+html,
+body {
+  padding: 0;
+  margin: 0;
 }
 
-.light-scrollbars::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(99, 102, 241), rgb(139, 92, 246));
-  border-radius: 4px;
-  border: 1px solid rgb(241, 245, 249);
-  transition: background 0.2s ease;
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.light-scrollbars::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(79, 70, 229), rgb(124, 58, 237));
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.light-scrollbars::-webkit-scrollbar-corner {
-  background: rgb(241, 245, 249);
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-/* Custom Scrollbars for Dark Theme */
-.dark-scrollbars {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(100, 116, 139) rgb(30, 41, 59);
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #64748b, #334155);
+  border-radius: 999px;
 }
 
-.dark-scrollbars::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+::-webkit-scrollbar-track {
+  background: #e2e8f0;
 }
 
-.dark-scrollbars::-webkit-scrollbar-track {
-  background: rgb(30, 41, 59);
-  border-radius: 4px;
-}
-
-.dark-scrollbars::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(165, 180, 252), rgb(196, 181, 253));
-  border-radius: 4px;
-  border: 1px solid rgb(30, 41, 59);
-  transition: background 0.2s ease;
-}
-
-.dark-scrollbars::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(196, 181, 253), rgb(244, 114, 182));
-}
-
-.dark-scrollbars::-webkit-scrollbar-corner {
-  background: rgb(30, 41, 59);
-}
-
-/* Apply scrollbars based on theme */
-html {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(99, 102, 241) rgb(241, 245, 249);
-}
-
-html::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-html::-webkit-scrollbar-track {
-  background: rgb(241, 245, 249);
-  border-radius: 4px;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(99, 102, 241), rgb(139, 92, 246));
-  border-radius: 4px;
-  border: 1px solid rgb(241, 245, 249);
-  transition: background 0.2s ease;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(79, 70, 229), rgb(124, 58, 237));
-}
-
-html::-webkit-scrollbar-corner {
-  background: rgb(241, 245, 249);
-}
-
-/* Dark mode scrollbars */
-.dark html {
-  scrollbar-color: rgb(100, 116, 139) rgb(30, 41, 59);
-}
-
-.dark html::-webkit-scrollbar-track {
-  background: rgb(30, 41, 59);
-}
-
-.dark html::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(165, 180, 252), rgb(196, 181, 253));
-  border: 1px solid rgb(30, 41, 59);
-  transition: background 0.2s ease;
-}
-
-.dark html::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(196, 181, 253), rgb(244, 114, 182));
-}
-
-.dark html::-webkit-scrollbar-corner {
-  background: rgb(30, 41, 59);
-}
-
-/* Textarea scrollbars */
-textarea {
-  scrollbar-width: thin;
-}
-
-textarea::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-textarea::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 3px;
-}
-
-textarea::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(99, 102, 241), rgb(139, 92, 246));
-  border-radius: 3px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-  transition: background 0.2s ease;
-}
-
-textarea::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(79, 70, 229), rgb(124, 58, 237));
-  background-clip: padding-box;
-}
-
-/* Dark mode textarea scrollbars */
-.dark textarea::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgb(165, 180, 252), rgb(196, 181, 253));
-  background-clip: padding-box;
-}
-
-.dark textarea::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgb(196, 181, 253), rgb(244, 114, 182));
-  background-clip: padding-box;
-}
-
-/* Print-specific styles */
-@media print {
-  body {
-    visibility: visible;
-    background: white;
-    color: black;
-    padding: 0;
-    margin: 0;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
-  .print-content {
-    width: 100%;
-    max-width: 100%;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    border: none;
-  }
-
-  .break-inside-avoid-page {
-    break-inside: avoid;
-  }
-
-  @page {
-    size: A4;
-    margin: 15mm;
-  }
-}
