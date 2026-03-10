@@ -174,9 +174,9 @@ export default function UploadPage() {
       user={user}
       onSignOut={signOut}
     >
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <form onSubmit={handleGenerate} className="surface-card-strong rounded-2xl p-5">
-          <div className="mb-5">
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <form onSubmit={handleGenerate} className="surface-card-strong rounded-2xl p-4 sm:p-5">
+          <div className="mb-4 sm:mb-5">
             <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Study Pack Title
             </label>
@@ -189,13 +189,13 @@ export default function UploadPage() {
             />
           </div>
 
-          <div className="mb-5">
+          <div className="mb-4 sm:mb-5">
             <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">Mode</label>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => setMode("cheatsheet")}
-                className={`rounded-xl border p-3 text-left ${
+                className={`tap-target rounded-xl border p-3 text-left ${
                   mode === "cheatsheet"
                     ? "border-[#84aceb] bg-[#ebf3ff]"
                     : "border-[var(--border-soft)] bg-[#f8fbff]"
@@ -209,7 +209,7 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={() => setMode("exam")}
-                className={`rounded-xl border p-3 text-left ${
+                className={`tap-target rounded-xl border p-3 text-left ${
                   mode === "exam"
                     ? "border-[#99d9c6] bg-[#edfbf6]"
                     : "border-[var(--border-soft)] bg-[#f8fbff]"
@@ -223,7 +223,7 @@ export default function UploadPage() {
             </div>
           </div>
 
-          <div className="mb-5">
+          <div className="mb-4 sm:mb-5">
             <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Upload Source File
             </label>
@@ -235,7 +235,7 @@ export default function UploadPage() {
             />
           </div>
 
-          <div className="mb-5">
+          <div className="mb-4 sm:mb-5">
             <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Or Paste Text
             </label>
@@ -243,7 +243,7 @@ export default function UploadPage() {
               value={rawText}
               onChange={(event) => setRawText(event.target.value)}
               placeholder="Paste lecture notes or textbook excerpt..."
-              rows={12}
+              rows={10}
               className="w-full rounded-xl border border-[var(--border-soft)] bg-[#fbfdff] px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#d8e8ff]"
             />
           </div>
@@ -263,7 +263,7 @@ export default function UploadPage() {
           <button
             type="submit"
             disabled={busy || saving}
-            className="btn-primary w-full px-5 py-3 text-sm disabled:cursor-not-allowed"
+            className="btn-primary tap-target w-full px-5 py-3 text-sm disabled:cursor-not-allowed"
           >
             {busy ? "Generating..." : "Generate Preview"}
           </button>
@@ -285,7 +285,7 @@ export default function UploadPage() {
             </ul>
           </div>
 
-          <Link href="/dashboard" className="btn-ghost block rounded-2xl p-5 text-sm">
+          <Link href="/dashboard" className="btn-ghost tap-target block rounded-2xl p-5 text-sm">
             Back to dashboard
           </Link>
         </aside>
@@ -293,10 +293,10 @@ export default function UploadPage() {
 
       {pendingResult ? (
         <section className="mt-8 space-y-6">
-          <article className="surface-card-strong rounded-2xl p-5">
+          <article className="surface-card-strong rounded-2xl p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-2xl font-black text-[var(--text-primary)]">{previewTitle}</h2>
+                <h2 className="text-xl font-black text-[var(--text-primary)] sm:text-2xl">{previewTitle}</h2>
                 <p className="text-xs text-[var(--text-muted)]">
                   Source: {pendingResult.originalFileName} | {pendingResult.characterCount} chars
                 </p>
@@ -316,12 +316,12 @@ export default function UploadPage() {
               Save this generated study pack to Firestore?
             </p>
 
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={saving || busy}
-                className="btn-primary px-4 py-2 text-sm disabled:cursor-not-allowed"
+                className="btn-primary tap-target w-full px-4 py-2 text-sm disabled:cursor-not-allowed sm:w-auto"
               >
                 {saving ? "Saving..." : "Save to Firestore"}
               </button>
@@ -329,7 +329,7 @@ export default function UploadPage() {
                 type="button"
                 onClick={handleDiscardPreview}
                 disabled={saving || busy}
-                className="rounded-xl border border-[var(--border-soft)] bg-white px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[#f8fbff] disabled:cursor-not-allowed"
+                className="tap-target w-full rounded-xl border border-[var(--border-soft)] bg-white px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[#f8fbff] disabled:cursor-not-allowed sm:w-auto"
               >
                 Don&apos;t Save
               </button>

@@ -117,10 +117,10 @@ export default function DashboardPage() {
       user={user}
       onSignOut={signOut}
     >
-      <div className="mb-6 grid gap-4 md:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <Link
           href="/upload"
-          className="surface-card rounded-2xl p-4 transition hover:-translate-y-0.5"
+          className="surface-card tap-target rounded-2xl p-4 transition hover:-translate-y-0.5"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand)]">
             New Upload
@@ -131,7 +131,7 @@ export default function DashboardPage() {
         </Link>
         <Link
           href="/notes"
-          className="surface-card rounded-2xl p-4 transition hover:-translate-y-0.5"
+          className="surface-card tap-target rounded-2xl p-4 transition hover:-translate-y-0.5"
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-[#0f7a5f]">
             Notes Library
@@ -156,7 +156,7 @@ export default function DashboardPage() {
         </p>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2">
         <DocumentList
           documents={documents}
           onRename={handleDocumentRename}

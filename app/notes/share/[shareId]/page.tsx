@@ -19,11 +19,11 @@ export default async function SharedNotePage({ params }: SharedNotePageProps) {
   }
 
   return (
-    <main className="app-background px-4 py-8 sm:px-6">
+    <main className="app-background px-4 py-6 sm:px-6 sm:py-8">
       <div className="mx-auto w-full max-w-6xl space-y-6">
-        <section className="surface-card-strong rounded-2xl p-6">
+        <section className="surface-card-strong rounded-2xl p-4 sm:p-6">
           <p className="chip inline-flex">Shared via CruxPad</p>
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-[var(--text-primary)]">
+          <h1 className="mt-3 text-2xl font-black tracking-tight text-[var(--text-primary)] sm:text-3xl">
             {note.title}
           </h1>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
@@ -31,7 +31,7 @@ export default async function SharedNotePage({ params }: SharedNotePageProps) {
             {formatDate(note.updatedAt || note.createdAt)}
           </p>
           <div className="mt-4">
-            <Link href="/" className="btn-ghost px-3 py-2 text-sm">
+            <Link href="/" className="btn-ghost tap-target inline-block px-3 py-2 text-sm">
               Open CruxPad
             </Link>
           </div>
@@ -116,4 +116,3 @@ export default async function SharedNotePage({ params }: SharedNotePageProps) {
     </main>
   );
 }
-

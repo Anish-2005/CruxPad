@@ -119,7 +119,7 @@ export default function NotesPage() {
         </p>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+      <div className="grid gap-6 xl:grid-cols-[340px_1fr]">
         <NotesList
           notes={notes}
           activeNoteId={selectedNoteId}
@@ -136,10 +136,12 @@ export default function NotesPage() {
             </div>
           ) : (
             <>
-              <article className="surface-card-strong rounded-2xl p-5">
+              <article className="surface-card-strong rounded-2xl p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-2xl font-black text-[var(--text-primary)]">{selectedNote.title}</h2>
+                    <h2 className="text-xl font-black text-[var(--text-primary)] sm:text-2xl">
+                      {selectedNote.title}
+                    </h2>
                     <p className="text-xs text-[var(--text-muted)]">
                       Updated {formatDate(selectedNote.updatedAt || selectedNote.createdAt)}
                     </p>
@@ -254,4 +256,3 @@ export default function NotesPage() {
     </AppShell>
   );
 }
-

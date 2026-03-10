@@ -39,8 +39,6 @@ export function AppShell({
             <Link href="/">
               <BrandLogo />
             </Link>
-          </div>
-
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="hidden text-right md:block">
                 <p className="max-w-[180px] truncate text-sm font-semibold text-[var(--text-primary)] sm:max-w-[260px]">

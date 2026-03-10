@@ -7,10 +7,10 @@ export default function HomePage() {
   return (
     <main className="app-background app-grid relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,#ecf6ff_0%,transparent_43%)]" />
-      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-6 py-20">
+      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-14 sm:px-6 sm:py-20">
         <BrandLogo className="mb-4 w-fit" tagline="AI Revision Workspace for Engineers" />
         <span className="chip w-fit">SaaS Study Platform</span>
-        <h1 className="mt-6 max-w-4xl text-5xl font-black leading-tight tracking-tight text-[var(--text-primary)] sm:text-6xl">
+        <h1 className="mt-6 max-w-4xl text-4xl font-black leading-tight tracking-tight text-[var(--text-primary)] sm:text-5xl lg:text-6xl">
           Professional revision workspace for engineering students
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
@@ -18,23 +18,23 @@ export default function HomePage() {
           and concept dependency graphs you can actually revise from.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-3">
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
             href="/dashboard"
-            className="btn-primary inline-flex items-center gap-2 px-5 py-3 text-sm"
+            className="btn-primary tap-target inline-flex w-full items-center justify-center gap-2 px-5 py-3 text-sm sm:w-auto"
           >
             Open Dashboard
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/upload"
-            className="btn-ghost px-5 py-3 text-sm"
+            className="btn-ghost tap-target w-full px-5 py-3 text-center text-sm sm:w-auto"
           >
             Upload Document
           </Link>
           <Link
             href="/notes"
-            className="btn-ghost px-5 py-3 text-sm"
+            className="btn-ghost tap-target w-full px-5 py-3 text-center text-sm sm:w-auto"
           >
             View Notes
           </Link>
@@ -64,7 +64,7 @@ export default function HomePage() {
           </article>
         </div>
 
-        <p className="mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+        <p className="mt-8 inline-flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           <Sparkles className="h-3.5 w-3.5" />
           Optimized for desktop and mobile
         </p>
