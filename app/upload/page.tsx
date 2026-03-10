@@ -54,7 +54,10 @@ export default function UploadPage() {
       if (file) {
         const parsed = await parseUploadedFile(file);
         sourceText = parsed.text;
-        sourceType = parsed.mimeType === "application/pdf" ? "pdf" : "text";
+        const isPdf =
+          (parsed.mimeType || "").toLowerCase().includes("pdf") ||
+          parsed.fileName.toLowerCase().endsWith(".pdf");
+        sourceType = isPdf ? "pdf" : "text";
         originalFileName = parsed.fileName;
       }
 

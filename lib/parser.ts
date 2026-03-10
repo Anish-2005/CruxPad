@@ -9,11 +9,16 @@ export function normalizeInputText(text: string) {
   return text.replace(/\r\n/g, "\n").trim();
 }
 
-export async function parseUploadedFile(file: File): Promise<ParsedUpload> {
-  const supportedMime =
-    file.type === "application/pdf" || file.type === "text/plain";
+function isSupportedUpload(file: File) {
+  const mime = (file.type || "").toLowerCase();
+  const name = (file.name || "").toLowerCase();
+  const isPdf = mime.includes("pdf") || name.endsWith(".pdf");
+  const isText = mime.startsWith("text/") || name.endsWith(".txt");
+  return isPdf || isText;
+}
 
-  if (!supportedMime) {
+export async function parseUploadedFile(file: File): Promise<ParsedUpload> {
+  if (!isSupportedUpload(file)) {
     throw new Error("Only PDF and plain text files are supported.");
   }
 
@@ -26,21 +31,38 @@ export async function parseUploadedFile(file: File): Promise<ParsedUpload> {
   });
 
   if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    const message =
-      typeof payload?.error === "string"
-        ? payload.error
-        : "Failed to parse uploaded file.";
+    const raw = await response.text().catch(() => "");
+    let message = "Failed to parse uploaded file.";
+    try {
+      const payload = JSON.parse(raw);
+      if (typeof payload?.error === "string" && payload.error.trim()) {
+        message = payload.error;
+      }
+    } catch {
+      if (raw.trim()) {
+        message = `Failed to parse uploaded file (HTTP ${response.status}): ${raw
+          .trim()
+          .slice(0, 220)}`;
+      } else {
+        message = `Failed to parse uploaded file (HTTP ${response.status}).`;
+      }
+    }
     throw new Error(message);
   }
 
   const payload = (await response.json()) as { text: string };
+  const normalized = normalizeInputText(payload.text || "");
+
+  if (!normalized) {
+    throw new Error(
+      "The uploaded file produced empty text. For scanned PDFs, OCR is required before upload."
+    );
+  }
 
   return {
-    text: normalizeInputText(payload.text || ""),
+    text: normalized,
     fileName: file.name,
     mimeType: file.type,
     size: file.size,
   };
 }
-
