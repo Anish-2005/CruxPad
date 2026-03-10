@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/AppShell";
 import { AuthGate } from "@/components/AuthGate";
@@ -20,19 +20,17 @@ import type { StoredNote } from "@/lib/types";
 
 export default function NotesPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const requestedNoteId = searchParams.get("noteId");
   const { user, loading, signOut } = useAuth();
 
   const [notes, setNotes] = useState<StoredNote[]>([]);
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(
-    requestedNoteId
-  );
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [banner, setBanner] = useState("");
 
   useEffect(() => {
-    setSelectedNoteId(requestedNoteId);
-  }, [requestedNoteId]);
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setSelectedNoteId(params.get("noteId"));
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -256,4 +254,3 @@ export default function NotesPage() {
     </AppShell>
   );
 }
-

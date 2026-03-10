@@ -16,7 +16,7 @@ import {
   signOut as firebaseSignOut,
 } from "firebase/auth";
 
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 interface AuthContextValue {
   user: User | null;
@@ -33,7 +33,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (nextUser) => {
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      setLoading(false);
+      return;
+    }
+
+    const unsub = onAuthStateChanged(firebaseAuth, (nextUser) => {
       setUser(nextUser);
       setLoading(false);
     });
@@ -41,15 +47,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      throw new Error("Firebase client config is missing.");
+    }
+    await signInWithEmailAndPassword(firebaseAuth, email, password);
   }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      throw new Error("Firebase client config is missing.");
+    }
+    await createUserWithEmailAndPassword(firebaseAuth, email, password);
   }, []);
 
   const signOut = useCallback(async () => {
-    await firebaseSignOut(auth);
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      return;
+    }
+    await firebaseSignOut(firebaseAuth);
   }, []);
 
   const value = useMemo(
@@ -73,4 +91,3 @@ export function useAuth() {
   }
   return context;
 }
-

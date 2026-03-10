@@ -13,7 +13,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
+import { getFirebaseDb } from "@/lib/firebase";
 import type { GeneratedCheatsheet, StoredDocument, StoredNote } from "@/lib/types";
 
 interface DocumentInput {
@@ -26,6 +26,14 @@ interface DocumentInput {
 
 interface NoteInput extends GeneratedCheatsheet {
   documentId: string;
+}
+
+function requireDb() {
+  const db = getFirebaseDb();
+  if (!db) {
+    throw new Error("Firebase client config is missing.");
+  }
+  return db;
 }
 
 function toIsoString(value: any): string | null {
@@ -88,6 +96,7 @@ export function subscribeToDocuments(
   uid: string,
   onData: (docs: StoredDocument[]) => void
 ) {
+  const db = requireDb();
   const ref = collection(db, "users", uid, "documents");
   const q = query(ref, orderBy("updatedAt", "desc"));
   return onSnapshot(q, (snapshot) => {
@@ -96,6 +105,7 @@ export function subscribeToDocuments(
 }
 
 export function subscribeToNotes(uid: string, onData: (notes: StoredNote[]) => void) {
+  const db = requireDb();
   const ref = collection(db, "users", uid, "notes");
   const q = query(ref, orderBy("updatedAt", "desc"));
   return onSnapshot(q, (snapshot) => {
@@ -104,6 +114,7 @@ export function subscribeToNotes(uid: string, onData: (notes: StoredNote[]) => v
 }
 
 export async function createDocumentRecord(uid: string, input: DocumentInput) {
+  const db = requireDb();
   const ref = collection(db, "users", uid, "documents");
   const docRef = await addDoc(ref, {
     ...input,
@@ -114,6 +125,7 @@ export async function createDocumentRecord(uid: string, input: DocumentInput) {
 }
 
 export async function createNoteRecord(uid: string, input: NoteInput) {
+  const db = requireDb();
   const ref = collection(db, "users", uid, "notes");
   const docRef = await addDoc(ref, {
     ...input,
@@ -126,6 +138,7 @@ export async function createNoteRecord(uid: string, input: NoteInput) {
 }
 
 export async function renameDocument(uid: string, documentId: string, name: string) {
+  const db = requireDb();
   const ref = doc(db, "users", uid, "documents", documentId);
   await updateDoc(ref, {
     name,
@@ -134,6 +147,7 @@ export async function renameDocument(uid: string, documentId: string, name: stri
 }
 
 export async function renameNote(uid: string, noteId: string, title: string) {
+  const db = requireDb();
   const ref = doc(db, "users", uid, "notes", noteId);
   await updateDoc(ref, {
     title,
@@ -142,11 +156,13 @@ export async function renameNote(uid: string, noteId: string, title: string) {
 }
 
 export async function deleteNote(uid: string, noteId: string) {
+  const db = requireDb();
   const ref = doc(db, "users", uid, "notes", noteId);
   await deleteDoc(ref);
 }
 
 export async function deleteDocument(uid: string, documentId: string) {
+  const db = requireDb();
   const documentRef = doc(db, "users", uid, "documents", documentId);
   const notesRef = collection(db, "users", uid, "notes");
   const notesSnapshot = await getDocs(
@@ -180,4 +196,3 @@ export async function createShareLink(noteId: string, idToken: string) {
 
   return (await response.json()) as { shareId: string; shareUrl: string };
 }
-
