@@ -89,15 +89,15 @@ export default function NotesPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-sm text-slate-600">Loading notes...</p>
+      <main className="app-background flex min-h-screen items-center justify-center">
+        <p className="text-sm text-[var(--text-secondary)]">Loading notes...</p>
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+      <main className="app-background flex min-h-screen items-center justify-center p-6">
         <AuthGate
           title="Sign in to view notes"
           subtitle="Access visual cheatsheet cards, exam mode notes, and knowledge graphs."
@@ -114,7 +114,7 @@ export default function NotesPage() {
       onSignOut={signOut}
     >
       {banner ? (
-        <p className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p className="mb-6 rounded-xl border border-[#b8e9db] bg-[var(--mint-soft)] px-4 py-3 text-sm text-[#0b6f58]">
           {banner}
         </p>
       ) : null}
@@ -131,24 +131,24 @@ export default function NotesPage() {
 
         <section className="space-y-6">
           {!selectedNote ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500 shadow-sm">
+            <div className="surface-card rounded-2xl p-8 text-center text-sm text-[var(--text-secondary)]">
               Select a cheatsheet to view its cards and graph.
             </div>
           ) : (
             <>
-              <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <article className="surface-card-strong rounded-2xl p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-2xl font-black text-slate-900">{selectedNote.title}</h2>
-                    <p className="text-xs text-slate-500">
+                    <h2 className="text-2xl font-black text-[var(--text-primary)]">{selectedNote.title}</h2>
+                    <p className="text-xs text-[var(--text-muted)]">
                       Updated {formatDate(selectedNote.updatedAt || selectedNote.createdAt)}
                     </p>
                   </div>
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
                       selectedNote.mode === "exam"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-blue-100 text-blue-700"
+                        ? "border border-[#f8d99d] bg-[var(--amber-soft)] text-[#946300]"
+                        : "border border-[#b9d5ff] bg-[var(--brand-soft)] text-[var(--brand-strong)]"
                     }`}
                   >
                     {selectedNote.mode === "exam" ? "Exam Mode" : "Cheatsheet"}
@@ -156,11 +156,11 @@ export default function NotesPage() {
                 </div>
 
                 {selectedNote.revisionNotes.length > 0 ? (
-                  <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="mb-2 text-sm font-semibold text-slate-800">Ultra Short Revision</p>
-                    <ul className="space-y-1 text-sm text-slate-700">
+                  <div className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-4">
+                    <p className="mb-2 text-sm font-semibold text-[var(--text-primary)]">Ultra Short Revision</p>
+                    <ul className="space-y-1 text-sm text-[var(--text-secondary)]">
                       {selectedNote.revisionNotes.map((note, index) => (
-                        <li key={`${note}-${index}`}>• {note}</li>
+                        <li key={`${note}-${index}`}>- {note}</li>
                       ))}
                     </ul>
                   </div>
@@ -175,10 +175,10 @@ export default function NotesPage() {
                   renderItem={(item, index) => (
                     <article
                       key={`${item.title}-${index}`}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                      className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
                     >
-                      <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                      <p className="mt-1 text-sm text-slate-600">{item.explanation}</p>
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</p>
+                      <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.explanation}</p>
                     </article>
                   )}
                 />
@@ -190,13 +190,13 @@ export default function NotesPage() {
                   renderItem={(item, index) => (
                     <article
                       key={`${item.name}-${index}`}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                      className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
                     >
-                      <p className="text-sm font-semibold text-slate-900">{item.name}</p>
-                      <p className="mt-1 rounded-md bg-white px-2 py-1 font-mono text-sm text-emerald-700">
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">{item.name}</p>
+                      <p className="mt-1 rounded-md border border-[#c8eadf] bg-white px-2 py-1 font-mono text-sm text-[#0b6f58]">
                         {item.formula}
                       </p>
-                      <p className="mt-1 text-sm text-slate-600">{item.description}</p>
+                      <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.description}</p>
                     </article>
                   )}
                 />
@@ -208,10 +208,10 @@ export default function NotesPage() {
                   renderItem={(item, index) => (
                     <article
                       key={`${item.title}-${index}`}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                      className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
                     >
-                      <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                      <p className="mt-1 text-sm text-slate-600">{item.detail}</p>
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</p>
+                      <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.detail}</p>
                     </article>
                   )}
                 />
@@ -223,10 +223,10 @@ export default function NotesPage() {
                   renderItem={(item, index) => (
                     <article
                       key={`${item.question}-${index}`}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                      className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
                     >
-                      <p className="text-sm font-semibold text-slate-900">{item.question}</p>
-                      <p className="mt-1 text-sm text-slate-600">{item.answerHint}</p>
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">{item.question}</p>
+                      <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.answerHint}</p>
                     </article>
                   )}
                 />
@@ -239,9 +239,9 @@ export default function NotesPage() {
                 renderItem={(item, index) => (
                   <p
                     key={`${item}-${index}`}
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700"
+                    className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] px-3 py-2 text-sm text-[var(--text-secondary)]"
                   >
-                    • {item}
+                    - {item}
                   </p>
                 )}
               />
@@ -254,3 +254,4 @@ export default function NotesPage() {
     </AppShell>
   );
 }
+

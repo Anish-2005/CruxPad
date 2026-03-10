@@ -95,15 +95,15 @@ export default function UploadPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-sm text-slate-600">Loading workspace...</p>
+      <main className="app-background flex min-h-screen items-center justify-center">
+        <p className="text-sm text-[var(--text-secondary)]">Loading workspace...</p>
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+      <main className="app-background flex min-h-screen items-center justify-center p-6">
         <AuthGate
           title="Sign in to upload"
           subtitle="Authenticate to create and save AI study packs."
@@ -120,12 +120,9 @@ export default function UploadPage() {
       onSignOut={signOut}
     >
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <form
-          onSubmit={handleGenerate}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-        >
+        <form onSubmit={handleGenerate} className="surface-card-strong rounded-2xl p-5">
           <div className="mb-5">
-            <label className="mb-2 block text-sm font-semibold text-slate-700">
+            <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Study Pack Title
             </label>
             <input
@@ -133,24 +130,24 @@ export default function UploadPage() {
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="Signals & Systems Unit 3"
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-[var(--border-soft)] bg-[#fbfdff] px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#d8e8ff]"
             />
           </div>
 
           <div className="mb-5">
-            <label className="mb-2 block text-sm font-semibold text-slate-700">Mode</label>
+            <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">Mode</label>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => setMode("cheatsheet")}
                 className={`rounded-xl border p-3 text-left ${
                   mode === "cheatsheet"
-                    ? "border-blue-300 bg-blue-50"
-                    : "border-slate-200 bg-slate-50"
+                    ? "border-[#84aceb] bg-[#ebf3ff]"
+                    : "border-[var(--border-soft)] bg-[#f8fbff]"
                 }`}
               >
-                <p className="text-sm font-semibold text-slate-900">Cheatsheet</p>
-                <p className="mt-1 text-xs text-slate-600">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">Cheatsheet</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">
                   Key concepts + formulas + examples.
                 </p>
               </button>
@@ -159,12 +156,12 @@ export default function UploadPage() {
                 onClick={() => setMode("exam")}
                 className={`rounded-xl border p-3 text-left ${
                   mode === "exam"
-                    ? "border-emerald-300 bg-emerald-50"
-                    : "border-slate-200 bg-slate-50"
+                    ? "border-[#99d9c6] bg-[#edfbf6]"
+                    : "border-[var(--border-soft)] bg-[#f8fbff]"
                 }`}
               >
-                <p className="text-sm font-semibold text-slate-900">Exam Mode</p>
-                <p className="mt-1 text-xs text-slate-600">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">Exam Mode</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">
                   Ultra short revision points + interview questions.
                 </p>
               </button>
@@ -172,19 +169,19 @@ export default function UploadPage() {
           </div>
 
           <div className="mb-5">
-            <label className="mb-2 block text-sm font-semibold text-slate-700">
+            <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Upload Source File
             </label>
             <input
               type="file"
               accept=".pdf,.txt,text/plain,application/pdf"
               onChange={(event) => setFile(event.target.files?.[0] || null)}
-              className="block w-full cursor-pointer rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-slate-700"
+              className="block w-full cursor-pointer rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--brand)] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-[var(--brand-strong)]"
             />
           </div>
 
           <div className="mb-5">
-            <label className="mb-2 block text-sm font-semibold text-slate-700">
+            <label className="mb-2 block text-sm font-semibold text-[var(--text-secondary)]">
               Or Paste Text
             </label>
             <textarea
@@ -192,18 +189,18 @@ export default function UploadPage() {
               onChange={(event) => setRawText(event.target.value)}
               placeholder="Paste lecture notes or textbook excerpt..."
               rows={12}
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-[var(--border-soft)] bg-[#fbfdff] px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#d8e8ff]"
             />
           </div>
 
           {error ? (
-            <p className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <p className="mb-4 rounded-xl border border-[#ffc8d2] bg-[var(--rose-soft)] px-4 py-3 text-sm text-[#9f2139]">
               {error}
             </p>
           ) : null}
 
           {status ? (
-            <p className="mb-4 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+            <p className="mb-4 rounded-xl border border-[#b9d5ff] bg-[var(--brand-soft)] px-4 py-3 text-sm text-[var(--brand-strong)]">
               {status}
             </p>
           ) : null}
@@ -211,32 +208,29 @@ export default function UploadPage() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+            className="btn-primary w-full px-5 py-3 text-sm disabled:cursor-not-allowed"
           >
             {busy ? "Generating..." : "Generate Study Pack"}
           </button>
         </form>
 
         <aside className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-bold text-slate-900">Current Source</h2>
-            <p className="mt-2 text-sm text-slate-600">{sourcePreview}</p>
+          <div className="surface-card rounded-2xl p-5">
+            <h2 className="text-base font-bold text-[var(--text-primary)]">Current Source</h2>
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">{sourcePreview}</p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-bold text-slate-900">Output Includes</h2>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li>• Visual cards for concepts, formulas, and examples</li>
-              <li>• Exam mode key points + interview questions</li>
-              <li>• Knowledge dependency graph (React Flow)</li>
-              <li>• Persisted notes with rename/delete/share controls</li>
+          <div className="surface-card rounded-2xl p-5">
+            <h2 className="text-base font-bold text-[var(--text-primary)]">Output Includes</h2>
+            <ul className="mt-3 space-y-2 text-sm text-[var(--text-secondary)]">
+              <li>- Visual cards for concepts, formulas, and examples</li>
+              <li>- Exam mode key points + interview questions</li>
+              <li>- Knowledge dependency graph (React Flow)</li>
+              <li>- Persisted notes with rename/delete/share controls</li>
             </ul>
           </div>
 
-          <Link
-            href="/dashboard"
-            className="block rounded-2xl border border-slate-200 bg-white p-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
+          <Link href="/dashboard" className="btn-ghost block rounded-2xl p-5 text-sm">
             Back to dashboard
           </Link>
         </aside>
@@ -244,3 +238,4 @@ export default function UploadPage() {
     </AppShell>
   );
 }
+

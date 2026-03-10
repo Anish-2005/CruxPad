@@ -16,19 +16,17 @@ export default function CheatCard<T>({
   renderItem,
 }: CheatCardProps<T>) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="surface-card-strong rounded-2xl p-5">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
-          {helper ? <p className="text-xs text-slate-500">{helper}</p> : null}
+          <h3 className="text-lg font-bold text-[var(--text-primary)]">{title}</h3>
+          {helper ? <p className="text-xs text-[var(--text-muted)]">{helper}</p> : null}
         </div>
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
-          {items.length}
-        </span>
+        <span className="chip">{items.length}</span>
       </header>
 
       {items.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-slate-300 px-3 py-4 text-sm text-slate-500">
+        <p className="rounded-xl border border-dashed border-[var(--border-soft)] px-3 py-4 text-sm text-[var(--text-muted)]">
           {emptyLabel}
         </p>
       ) : (
