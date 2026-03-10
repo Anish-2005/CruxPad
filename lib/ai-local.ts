@@ -8,14 +8,18 @@ import type {
   StudySections,
 } from "@/lib/types";
 
-const OLLAMA_BASE_URL =
-  process.env.OLLAMA_BASE_URL?.trim() || "http://127.0.0.1:11434";
+const SAMBANOVA_BASE_URL = (
+  process.env.SAMBANOVA_BASE_URL?.trim() || "https://api.sambanova.ai/v1"
+).replace(/\/+$/, "");
 
-const OLLAMA_PRIMARY_MODEL = process.env.OLLAMA_MODEL?.trim() || "qwen2.5:7b";
+const SAMBANOVA_API_KEY = process.env.SAMBANOVA_API_KEY?.trim() || "";
 
-const OLLAMA_FALLBACK_MODELS = (
-  process.env.OLLAMA_FALLBACK_MODELS ||
-  "llama3.2:3b,mistral:7b,phi3:mini"
+const SAMBANOVA_PRIMARY_MODEL =
+  process.env.SAMBANOVA_MODEL?.trim() || "Meta-Llama-3.3-70B-Instruct";
+
+const SAMBANOVA_FALLBACK_MODELS = (
+  process.env.SAMBANOVA_FALLBACK_MODELS ||
+  "DeepSeek-V3.1,DeepSeek-V3-0324,Meta-Llama-3.1-8B-Instruct"
 )
   .split(",")
   .map((item) => item.trim())
@@ -232,39 +236,23 @@ function sanitizePayload(raw: any, mode: StudyMode): GeneratedCheatsheet {
   };
 }
 
-async function getInstalledOllamaModels() {
-  try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`, {
-      method: "GET",
-      cache: "no-store",
-    });
-    if (!response.ok) return [];
-    const payload = (await response.json()) as {
-      models?: Array<{ name?: string; model?: string }>;
+type SambaNovaResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string;
     };
-    const models = payload.models || [];
-    return models
-      .map((item) => item.name || item.model || "")
-      .map((name) => name.trim())
-      .filter(Boolean);
-  } catch {
-    return [];
-  }
-}
+  }>;
+  error?: {
+    message?: string;
+  };
+};
 
-function chooseModelCandidates(installed: string[]) {
-  const preferred = [OLLAMA_PRIMARY_MODEL, ...OLLAMA_FALLBACK_MODELS];
-  const installedSet = new Set(installed);
+function chooseModelCandidates() {
+  const preferred = [SAMBANOVA_PRIMARY_MODEL, ...SAMBANOVA_FALLBACK_MODELS];
   const candidates: string[] = [];
 
   for (const model of preferred) {
-    if (installedSet.has(model) && !candidates.includes(model)) {
-      candidates.push(model);
-    }
-  }
-
-  for (const model of preferred) {
-    if (!candidates.includes(model)) {
+    if (model && !candidates.includes(model)) {
       candidates.push(model);
     }
   }
@@ -272,49 +260,78 @@ function chooseModelCandidates(installed: string[]) {
   return candidates;
 }
 
-async function runOllama(model: string, prompt: string) {
-  const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+async function runSambaNova(model: string, prompt: string) {
+  const response = await fetch(`${SAMBANOVA_BASE_URL}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${SAMBANOVA_API_KEY}`,
     },
     body: JSON.stringify({
       model,
-      prompt,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.2,
+      max_tokens: 4096,
       stream: false,
-      format: "json",
-      options: {
-        temperature: 0.2,
-        num_ctx: 8192,
+      response_format: {
+        type: "json_object",
       },
     }),
   });
 
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    throw new Error(text || `Ollama request failed (${response.status}).`);
+    const rawError = await response.text().catch(() => "");
+    let parsedMessage = "";
+
+    if (rawError) {
+      try {
+        parsedMessage = cleanText(
+          ((JSON.parse(rawError) as SambaNovaResponse)?.error?.message || "").trim()
+        );
+      } catch {
+        parsedMessage = "";
+      }
+    }
+
+    const message =
+      parsedMessage ||
+      cleanText(rawError) ||
+      `SambaNova request failed (${response.status}).`;
+    throw new Error(message);
   }
 
-  const payload = (await response.json()) as { response?: string };
-  if (!payload?.response) {
-    throw new Error("Ollama returned an empty response.");
+  const payload = (await response.json()) as SambaNovaResponse;
+  const content = payload?.choices?.[0]?.message?.content;
+
+  if (!content || typeof content !== "string") {
+    throw new Error("SambaNova returned an empty response.");
   }
 
-  return payload.response;
+  return content;
 }
 
-export async function generateStudyPackWithLocalLLM(
+export async function generateStudyPackWithSambaNova(
   text: string,
   mode: StudyMode
 ): Promise<GeneratedCheatsheet> {
+  if (!SAMBANOVA_API_KEY) {
+    throw new Error(
+      "SambaNova API key is missing. Set SAMBANOVA_API_KEY in your environment."
+    );
+  }
+
   const prompt = buildPrompt(text, mode);
-  const installed = await getInstalledOllamaModels();
-  const candidates = chooseModelCandidates(installed);
+  const candidates = chooseModelCandidates();
   const errors: string[] = [];
 
   for (const model of candidates) {
     try {
-      const raw = await runOllama(model, prompt);
+      const raw = await runSambaNova(model, prompt);
       const parsed = parseJsonFromModel(raw);
       const sanitized = sanitizePayload(parsed, mode);
 
@@ -325,7 +342,7 @@ export async function generateStudyPackWithLocalLLM(
         sanitized.sections.keyPoints.length === 0
       ) {
         sanitized.sections.keyPoints = [
-          "Local model returned thin output. Retry or use a stronger local model.",
+          "SambaNova model returned thin output. Retry or switch the model.",
         ];
       }
 
@@ -336,10 +353,16 @@ export async function generateStudyPackWithLocalLLM(
   }
 
   throw new Error(
-    `Local LLM generation failed. Ensure Ollama is running on ${OLLAMA_BASE_URL} and install one of: ${[
-      OLLAMA_PRIMARY_MODEL,
-      ...OLLAMA_FALLBACK_MODELS,
+    `SambaNova AI generation failed via ${SAMBANOVA_BASE_URL}. Tried models: ${[
+      SAMBANOVA_PRIMARY_MODEL,
+      ...SAMBANOVA_FALLBACK_MODELS,
     ].join(", ")}. Details: ${errors.join(" | ")}`
   );
 }
 
+export async function generateStudyPackWithLocalLLM(
+  text: string,
+  mode: StudyMode
+): Promise<GeneratedCheatsheet> {
+  return generateStudyPackWithSambaNova(text, mode);
+}

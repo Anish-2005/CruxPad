@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { generateStudyPackWithLocalLLM } from "@/lib/ai-local";
+import { generateStudyPackWithSambaNova } from "@/lib/ai-local";
 import type { StudyMode } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -25,13 +25,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await generateStudyPackWithLocalLLM(text, mode);
+    const data = await generateStudyPackWithSambaNova(text, mode);
     return NextResponse.json({ data });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || "Local AI generation failed." },
+      { error: error?.message || "SambaNova AI generation failed." },
       { status: 500 }
     );
   }
 }
-

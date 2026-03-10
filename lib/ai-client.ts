@@ -4,7 +4,7 @@ interface GenerateResponse {
   data: GeneratedCheatsheet;
 }
 
-export async function generateStudyPackWithLocalLLM(
+export async function generateStudyPackWithSambaNova(
   text: string,
   mode: StudyMode
 ): Promise<GeneratedCheatsheet> {
@@ -21,7 +21,7 @@ export async function generateStudyPackWithLocalLLM(
     const message =
       typeof payload?.error === "string"
         ? payload.error
-        : "Local AI generation failed.";
+        : "SambaNova AI generation failed.";
     throw new Error(message);
   }
 
@@ -29,3 +29,9 @@ export async function generateStudyPackWithLocalLLM(
   return payload.data;
 }
 
+export async function generateStudyPackWithLocalLLM(
+  text: string,
+  mode: StudyMode
+): Promise<GeneratedCheatsheet> {
+  return generateStudyPackWithSambaNova(text, mode);
+}

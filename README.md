@@ -5,7 +5,7 @@ CruxPad is a Next.js SaaS-style study tool for engineering students.
 It supports:
 - Firebase email/password + Google authentication
 - PDF/TXT upload and parsing
-- Local free LLM-powered cheatsheet generation (Ollama)
+- SambaNova API-powered cheatsheet generation
 - Exam mode (ultra-short revision notes)
 - Visual cards for concepts, formulas, examples
 - Knowledge graphs using React Flow
@@ -15,7 +15,7 @@ It supports:
 - Next.js 14 (App Router)
 - Tailwind CSS
 - Firebase Auth + Firestore
-- Local LLM via Ollama HTTP API
+- SambaNova Cloud API (`/v1/chat/completions`)
 - React Flow
 
 ## Folder Structure
@@ -37,22 +37,16 @@ lib/
 ## Environment Variables
 Copy `.env.example` to `.env.local` and fill values:
 
-- `OLLAMA_BASE_URL` (default: `http://127.0.0.1:11434`)
-- `OLLAMA_MODEL` (default: `qwen2.5:7b`)
-- `OLLAMA_FALLBACK_MODELS` (comma-separated local model names)
+- `SAMBANOVA_API_KEY`
+- `SAMBANOVA_BASE_URL` (default: `https://api.sambanova.ai/v1`)
+- `SAMBANOVA_MODEL` (default: `Meta-Llama-3.3-70B-Instruct`)
+- `SAMBANOVA_FALLBACK_MODELS` (comma-separated model names)
 - `NEXT_PUBLIC_FIREBASE_*` values for client SDK
 - `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` for admin routes (share links/public note fetch)
 
 Also enable providers in Firebase Console:
 - Authentication -> Sign-in method -> enable `Email/Password`
 - Authentication -> Sign-in method -> enable `Google`
-
-Local LLM notes:
-- Install Ollama locally.
-- Pull one or more models, for example:
-  - `ollama pull qwen2.5:7b`
-  - `ollama pull llama3.2:3b`
-  - `ollama pull mistral:7b`
 
 ## Run
 ```bash
