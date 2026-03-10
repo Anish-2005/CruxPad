@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { ArrowRight, FileText, Network, Sparkles, Zap } from "lucide-react";
 
+import BrandLogo from "@/components/BrandLogo";
+
 export default function HomePage() {
   return (
     <main className="app-background app-grid relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,#ecf6ff_0%,transparent_43%)]" />
       <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-6 py-20">
+        <BrandLogo className="mb-4 w-fit" tagline="AI Revision Workspace for Engineers" />
         <span className="chip w-fit">SaaS Study Platform</span>
         <h1 className="mt-6 max-w-4xl text-5xl font-black leading-tight tracking-tight text-[var(--text-primary)] sm:text-6xl">
           Professional revision workspace for engineering students

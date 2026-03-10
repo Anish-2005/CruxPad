@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 108" role="img" aria-label="CruxPad logo">
+  <defs>
+    <linearGradient id="cp-logo-bg" x1="11" y1="8" x2="97" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1370ea" />
+      <stop offset="0.52" stop-color="#0f53cb" />
+      <stop offset="1" stop-color="#0b8f86" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="92" height="92" rx="24" fill="url(#cp-logo-bg)" />
+  <path
+    d="M74 32C67 26 58 23 48 23C30 23 16 39 16 54C16 69 30 85 48 85C58 85 67 82 74 76"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="11"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path d="M49 34L60 45M49 75L60 64" fill="none" stroke="#bfe8ff" stroke-width="6.6" stroke-linecap="round" />
+  <circle cx="74" cy="32" r="4.3" fill="#91f4df" />
+  <circle cx="74" cy="76" r="4.3" fill="#91f4df" />
+  <text
+    x="122"
+    y="57"
+    font-family="Aptos Display, Trebuchet MS, Segoe UI, sans-serif"
+    font-size="46"
+    font-weight="800"
+    letter-spacing="-0.8"
+    fill="#101827"
+  >
+    CruxPad
+  </text>
+  <text
+    x="124"
+    y="82"
+    font-family="Aptos, Segoe UI, sans-serif"
+    font-size="15"
+    font-weight="600"
+    letter-spacing="0.2"
+    fill="#415069"
+  >
+    Focus. Revise. Ship.
+  </text>
+</svg>

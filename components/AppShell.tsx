@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { User } from "firebase/auth";
-import { LogOut, Sparkles } from "lucide-react";
+import { LogOut } from "lucide-react";
 
+import BrandLogo from "@/components/BrandLogo";
 import { cn } from "@/lib/utils";
 
 interface AppShellProps {
@@ -35,15 +36,9 @@ export function AppShell({
       <header className="sticky top-0 z-30 border-b border-[var(--border-soft)] bg-[#f8fbffdb] backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--border-soft)] bg-white shadow-sm">
-              <Sparkles className="h-5 w-5 text-[var(--brand)]" />
-            </div>
-            <div>
-              <Link href="/" className="text-xl font-black tracking-tight text-[var(--text-primary)]">
-                CruxPad
-              </Link>
-              <p className="text-xs text-[var(--text-muted)]">Engineering Study Workspace</p>
-            </div>
+            <Link href="/">
+              <BrandLogo />
+            </Link>
           </div>
 
           <nav className="no-scrollbar flex items-center gap-2 overflow-x-auto rounded-xl border border-[var(--border-soft)] bg-white p-1">
