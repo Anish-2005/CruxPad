@@ -49,17 +49,20 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
   }
 
   return (
-    <section className="mx-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
-      <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-      <p className="mt-2 text-sm text-slate-600">{subtitle}</p>
+    <section className="surface-card-strong fade-up mx-auto w-full max-w-md rounded-3xl p-8">
+      <div className="mb-6">
+        <p className="chip mb-3 inline-flex">Secure Access</p>
+        <h1 className="text-3xl font-black text-[var(--text-primary)]">{title}</h1>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">{subtitle}</p>
+      </div>
 
-      <div className="mt-6 inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 text-sm">
+      <div className="inline-flex rounded-xl border border-[var(--border-soft)] bg-[#f6f9ff] p-1 text-sm">
         <button
           type="button"
           className={`rounded-lg px-4 py-2 font-medium ${
             mode === "signin"
-              ? "bg-slate-900 text-white"
-              : "text-slate-700 hover:text-slate-900"
+              ? "bg-[var(--brand)] text-white"
+              : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
           onClick={() => setMode("signin")}
         >
@@ -83,7 +86,7 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-ghost flex w-full items-center justify-center gap-2 px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -101,27 +104,27 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200" />
+            <div className="w-full border-t border-[var(--border-soft)]" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-2 text-slate-500">or use email</span>
+            <span className="bg-[var(--panel-strong)] px-2 text-[var(--text-muted)]">or use email</span>
           </div>
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
+          <label className="mb-1 block text-sm font-semibold text-[var(--text-secondary)]">Email</label>
           <input
             type="email"
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-xl border border-[var(--border-soft)] bg-[#fbfdff] px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#d8e8ff]"
             placeholder="student@university.edu"
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">
+          <label className="mb-1 block text-sm font-semibold text-[var(--text-secondary)]">
             Password
           </label>
           <input
@@ -130,19 +133,21 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
             minLength={6}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-xl border border-[var(--border-soft)] bg-[#fbfdff] px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[#d8e8ff]"
             placeholder="Minimum 6 characters"
           />
         </div>
 
         {error ? (
-          <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
+          <p className="rounded-lg border border-[#ffc8d2] bg-[var(--rose-soft)] px-3 py-2 text-sm text-[#9f2139]">
+            {error}
+          </p>
         ) : null}
 
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          className="btn-primary w-full px-4 py-3 text-sm disabled:cursor-not-allowed"
         >
           {busy
             ? "Working..."

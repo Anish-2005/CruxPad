@@ -93,15 +93,15 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-sm text-slate-600">Loading workspace...</p>
+      <main className="app-background flex min-h-screen items-center justify-center">
+        <p className="text-sm text-[var(--text-secondary)]">Loading workspace...</p>
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+      <main className="app-background flex min-h-screen items-center justify-center p-6">
         <AuthGate
           title="Sign in to CruxPad"
           subtitle="Manage your documents, cheatsheets, and share links from one dashboard."
@@ -120,38 +120,38 @@ export default function DashboardPage() {
       <div className="mb-6 grid gap-4 md:grid-cols-3">
         <Link
           href="/upload"
-          className="rounded-2xl border border-blue-200 bg-blue-50 p-4 shadow-sm transition hover:bg-blue-100"
+          className="surface-card rounded-2xl p-4 transition hover:-translate-y-0.5"
         >
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand)]">
             New Upload
           </p>
-          <p className="mt-1 text-sm text-blue-900">
+          <p className="mt-1 text-sm text-[var(--text-primary)]">
             Parse PDF/TXT and generate a fresh cheatsheet.
           </p>
         </Link>
         <Link
           href="/notes"
-          className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm transition hover:bg-emerald-100"
+          className="surface-card rounded-2xl p-4 transition hover:-translate-y-0.5"
         >
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[#0f7a5f]">
             Notes Library
           </p>
-          <p className="mt-1 text-sm text-emerald-900">
+          <p className="mt-1 text-sm text-[var(--text-primary)]">
             Open visual cards, exam mode notes, and graph view.
           </p>
         </Link>
-        <div className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50 p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-fuchsia-700">
+        <div className="surface-card rounded-2xl p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[#8f4265]">
             Share Ready
           </p>
-          <p className="mt-1 text-sm text-fuchsia-900">
+          <p className="mt-1 text-sm text-[var(--text-primary)]">
             Public links can be generated directly from any note.
           </p>
         </div>
       </div>
 
       {banner ? (
-        <p className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p className="mb-6 rounded-xl border border-[#b8e9db] bg-[var(--mint-soft)] px-4 py-3 text-sm text-[#0b6f58]">
           {banner}
         </p>
       ) : null}
@@ -174,4 +174,3 @@ export default function DashboardPage() {
     </AppShell>
   );
 }
-
