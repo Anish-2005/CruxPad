@@ -1,6 +1,6 @@
 import "server-only";
 
-import { adminDb, isFirebaseAdminConfigured } from "@/lib/firebase-admin";
+import { getAdminDb, isFirebaseAdminConfigured } from "@/lib/firebase-admin";
 import type { StoredNote } from "@/lib/types";
 
 function toIso(value: any): string | null {
@@ -26,6 +26,7 @@ export async function getPublicNoteByShareId(
     return null;
   }
 
+  const adminDb = getAdminDb();
   const ref = adminDb.collection("publicNotes").doc(shareId);
   const snap = await ref.get();
   if (!snap.exists) {
@@ -57,4 +58,3 @@ export async function getPublicNoteByShareId(
     updatedAt: toIso(data.updatedAt),
   };
 }
-
