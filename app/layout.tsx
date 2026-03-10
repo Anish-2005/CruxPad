@@ -3,13 +3,69 @@ import type { Metadata, Viewport } from "next";
 import Providers from "@/app/providers";
 import "./globals.css";
 
+const siteUrl = "https://cruxpad.vercel.app";
+const siteName = "CruxPad";
+const defaultTitle = "CruxPad | AI Study Workspace for Engineering Students";
+const defaultDescription =
+  "CruxPad turns engineering PDFs and notes into structured cheatsheets, exam revision bullets, interview prep, and concept graphs.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "CruxPad | Engineering Study SaaS",
+    default: defaultTitle,
     template: "%s | CruxPad",
   },
-  description:
-    "Upload engineering docs, generate AI cheatsheets, exam notes, and concept graphs.",
+  description: defaultDescription,
+  applicationName: siteName,
+  keywords: [
+    "engineering study app",
+    "AI notes generator",
+    "cheatsheet generator",
+    "exam revision notes",
+    "concept graph",
+    "PDF to notes",
+    "student productivity",
+  ],
+  authors: [{ name: siteName }],
+  creator: siteName,
+  publisher: siteName,
+  category: "education",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    title: defaultTitle,
+    description: defaultDescription,
+    siteName,
+    locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "CruxPad - AI study workspace",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: defaultDescription,
+    images: ["/twitter-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },

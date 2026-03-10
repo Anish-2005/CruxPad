@@ -1,11 +1,79 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, FileText, Network, Sparkles, Zap } from "lucide-react";
 
 import BrandLogo from "@/components/BrandLogo";
 
+const siteUrl = "https://cruxpad.vercel.app";
+
+export const metadata: Metadata = {
+  title: "AI Study Workspace for Engineering Students",
+  description:
+    "Convert engineering PDFs and class notes into concise cheatsheets, exam revision bullets, and concept graphs with CruxPad.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: siteUrl,
+    title: "CruxPad - AI Study Workspace for Engineering Students",
+    description:
+      "Generate structured engineering study packs with AI: concepts, formulas, examples, interview questions, and graphs.",
+    images: ["/opengraph-image"],
+  },
+  twitter: {
+    title: "CruxPad - AI Study Workspace for Engineering Students",
+    description:
+      "Generate structured engineering study packs with AI: concepts, formulas, examples, interview questions, and graphs.",
+    images: ["/twitter-image"],
+  },
+};
+
 export default function HomePage() {
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "CruxPad",
+    url: siteUrl,
+  };
+
+  const appSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "CruxPad",
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    description:
+      "AI workspace for engineering students to convert PDFs and notes into cheatsheets, exam revision notes, and concept graphs.",
+    url: siteUrl,
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "CruxPad",
+    url: siteUrl,
+    logo: `${siteUrl}/brand-mark.svg`,
+  };
+
   return (
     <main className="app-background app-grid relative min-h-screen overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_18%,#ecf6ff_0%,transparent_43%)]" />
       <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-14 sm:px-6 sm:py-20">
         <BrandLogo className="mb-4 w-fit" />

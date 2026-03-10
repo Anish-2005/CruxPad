@@ -1,7 +1,7 @@
 {
-  "name": "CruxPad - AI-Powered Cheatsheet Generator",
+  "name": "CruxPad - AI Study Workspace",
   "short_name": "CruxPad",
-  "description": "Transform lengthy documents into concise, visual engineering study packs.",
+  "description": "AI workspace for engineering students to generate revision-ready study packs.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f9fc",
@@ -15,21 +15,13 @@
       "src": "/brand-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
+      "purpose": "any maskable"
     },
     {
-      "src": "/screenshot-narrow.png",
-      "sizes": "750x1334",
-      "type": "image/png",
-      "form_factor": "narrow"
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon",
+      "purpose": "any"
     }
   ]
 }
