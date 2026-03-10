@@ -1,6 +1,6 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
+import { Auth, getAuth } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,21 +11,53 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const hasRequiredConfig =
-  Boolean(firebaseConfig.apiKey) &&
-  Boolean(firebaseConfig.authDomain) &&
-  Boolean(firebaseConfig.projectId) &&
-  Boolean(firebaseConfig.appId);
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
 
-if (!hasRequiredConfig && typeof window !== "undefined") {
-  // eslint-disable-next-line no-console
-  console.warn(
-    "Firebase env vars are missing. Add NEXT_PUBLIC_FIREBASE_* values in .env.local."
-  );
+function hasClientConfig() {
+  return Boolean(firebaseConfig.apiKey) && Boolean(firebaseConfig.projectId);
 }
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+function getOrInitApp() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  if (!hasClientConfig()) {
+    return null;
+  }
+  if (app) {
+    return app;
+  }
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  return app;
+}
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export function getFirebaseAuth() {
+  if (auth) {
+    return auth;
+  }
+  const firebaseApp = getOrInitApp();
+  if (!firebaseApp) {
+    return null;
+  }
+  auth = getAuth(firebaseApp);
+  return auth;
+}
+
+export function getFirebaseDb() {
+  if (db) {
+    return db;
+  }
+  const firebaseApp = getOrInitApp();
+  if (!firebaseApp) {
+    return null;
+  }
+  db = getFirestore(firebaseApp);
+  return db;
+}
+
+export function isFirebaseClientConfigured() {
+  return hasClientConfig();
+}
 
