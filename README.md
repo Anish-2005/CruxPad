@@ -3,7 +3,7 @@
 CruxPad is a Next.js SaaS-style study tool for engineering students.
 
 It supports:
-- Firebase email/password authentication
+- Firebase email/password + Google authentication
 - PDF/TXT upload and parsing
 - Gemini-powered cheatsheet generation
 - Exam mode (ultra-short revision notes)
@@ -41,6 +41,10 @@ Copy `.env.example` to `.env.local` and fill values:
 - `NEXT_PUBLIC_FIREBASE_*` values for client SDK
 - `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` for admin routes (share links/public note fetch)
 
+Also enable providers in Firebase Console:
+- Authentication -> Sign-in method -> enable `Email/Password`
+- Authentication -> Sign-in method -> enable `Google`
+
 ## Run
 ```bash
 npm install
@@ -53,4 +57,3 @@ npm run build
 ```
 
 Note: lint is skipped during build via `next.config.mjs` because the repo currently has a legacy ESLint/Next config mismatch.
-

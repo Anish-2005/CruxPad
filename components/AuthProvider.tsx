@@ -9,9 +9,12 @@ import {
   useState,
 } from "react";
 import {
+  GoogleAuthProvider,
   User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from "firebase/auth";
@@ -23,6 +26,7 @@ interface AuthContextValue {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -70,15 +74,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await firebaseSignOut(firebaseAuth);
   }, []);
 
+  const signInWithGoogle = useCallback(async () => {
+    const firebaseAuth = getFirebaseAuth();
+    if (!firebaseAuth) {
+      throw new Error("Firebase client config is missing.");
+    }
+
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    try {
+      await signInWithPopup(firebaseAuth, provider);
+    } catch (error: any) {
+      // Mobile browsers and strict popup settings may block popups.
+      if (
+        error?.code === "auth/popup-blocked" ||
+        error?.code === "auth/popup-closed-by-user" ||
+        error?.code === "auth/cancelled-popup-request"
+      ) {
+        await signInWithRedirect(firebaseAuth, provider);
+        return;
+      }
+      throw error;
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       user,
       loading,
       signIn,
       signUp,
+      signInWithGoogle,
       signOut,
     }),
-    [loading, signIn, signOut, signUp, user]
+    [loading, signIn, signInWithGoogle, signOut, signUp, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
