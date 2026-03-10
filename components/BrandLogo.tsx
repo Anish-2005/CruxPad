@@ -5,31 +5,21 @@ import { cn } from "@/lib/utils";
 interface BrandLogoProps {
   compact?: boolean;
   className?: string;
-  tagline?: string;
 }
 
 export default function BrandLogo({
   compact = false,
   className,
-  tagline = "Engineering Study Workspace",
 }: BrandLogoProps) {
   return (
-    <span className={cn("inline-flex items-center gap-2 sm:gap-3", className)}>
+    <span className={cn("inline-flex items-center", className)}>
       <Image
-        src="/brand-mark.svg"
-        alt="CruxPad brand mark"
-        width={40}
-        height={40}
-        className="h-9 w-9 sm:h-10 sm:w-10"
+        src={compact ? "/brand-mark.svg" : "/brand-logo.svg"}
+        alt={compact ? "CruxPad brand mark" : "CruxPad logo"}
+        width={compact ? 40 : 260}
+        height={compact ? 40 : 64}
+        className={compact ? "h-9 w-9 sm:h-10 sm:w-10" : "h-8 w-auto sm:h-9"}
       />
-      {compact ? null : (
-        <span className="leading-tight">
-          <span className="block text-lg font-black tracking-tight text-[var(--text-primary)] sm:text-xl">
-            CruxPad
-          </span>
-          <span className="hidden text-xs text-[var(--text-muted)] sm:block">{tagline}</span>
-        </span>
-      )}
     </span>
   );
 }

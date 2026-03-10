@@ -1,27 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CruxPad brand mark">
   <defs>
-    <linearGradient id="cp-bg" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1370ea" />
-      <stop offset="0.52" stop-color="#0f53cb" />
-      <stop offset="1" stop-color="#0b8f86" />
+    <linearGradient id="cp-bg" x1="14" y1="10" x2="114" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a173d" />
+      <stop offset="0.55" stop-color="#0f5de0" />
+      <stop offset="1" stop-color="#06b39f" />
     </linearGradient>
+    <radialGradient
+      id="cp-glow"
+      cx="0"
+      cy="0"
+      r="1"
+      gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(34 24) rotate(42) scale(76 88)"
+    >
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#cp-bg)" />
+
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#cp-bg)" />
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#cp-glow)" />
+
   <path
-    d="M88 36C80 29 69 25 57 25C35 25 18 42 18 64C18 86 35 103 57 103C69 103 80 99 88 92"
+    d="M89 39.5C82.8 32.8 73.9 28.8 64 28.8C44.6 28.8 28.8 44.6 28.8 64C28.8 83.4 44.6 99.2 64 99.2C73.9 99.2 82.8 95.2 89 88.5"
     fill="none"
     stroke="#ffffff"
-    stroke-width="14"
+    stroke-width="11.5"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
+  <path d="M69.5 40.5V87.5" fill="none" stroke="#bfe9ff" stroke-width="7.8" stroke-linecap="round" />
   <path
-    d="M58 39L72 53M58 89L72 75"
+    d="M69.5 40.5H78.6C87.1 40.5 94 47.4 94 55.9C94 64.4 87.1 71.3 78.6 71.3H69.5"
     fill="none"
-    stroke="#bfe8ff"
-    stroke-width="8"
+    stroke="#bfe9ff"
+    stroke-width="7.8"
     stroke-linecap="round"
+    stroke-linejoin="round"
   />
-  <circle cx="88" cy="36" r="5.5" fill="#91f4df" />
-  <circle cx="88" cy="92" r="5.5" fill="#91f4df" />
+  <circle cx="93.6" cy="55.9" r="4.2" fill="#8ef6db" />
 </svg>

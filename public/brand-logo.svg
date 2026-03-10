@@ -1,43 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 108" role="img" aria-label="CruxPad logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 128" role="img" aria-label="CruxPad logo">
   <defs>
-    <linearGradient id="cp-logo-bg" x1="11" y1="8" x2="97" y2="100" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1370ea" />
-      <stop offset="0.52" stop-color="#0f53cb" />
-      <stop offset="1" stop-color="#0b8f86" />
+    <linearGradient id="cp-logo-bg" x1="14" y1="10" x2="114" y2="118" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0a173d" />
+      <stop offset="0.55" stop-color="#0f5de0" />
+      <stop offset="1" stop-color="#06b39f" />
+    </linearGradient>
+    <radialGradient
+      id="cp-logo-glow"
+      cx="0"
+      cy="0"
+      r="1"
+      gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(34 24) rotate(42) scale(76 88)"
+    >
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="cp-accent" x1="160" y1="90" x2="388" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f5de0" />
+      <stop offset="1" stop-color="#06b39f" />
     </linearGradient>
   </defs>
-  <rect x="8" y="8" width="92" height="92" rx="24" fill="url(#cp-logo-bg)" />
+
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#cp-logo-bg)" />
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#cp-logo-glow)" />
   <path
-    d="M74 32C67 26 58 23 48 23C30 23 16 39 16 54C16 69 30 85 48 85C58 85 67 82 74 76"
+    d="M89 39.5C82.8 32.8 73.9 28.8 64 28.8C44.6 28.8 28.8 44.6 28.8 64C28.8 83.4 44.6 99.2 64 99.2C73.9 99.2 82.8 95.2 89 88.5"
     fill="none"
     stroke="#ffffff"
-    stroke-width="11"
+    stroke-width="11.5"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
-  <path d="M49 34L60 45M49 75L60 64" fill="none" stroke="#bfe8ff" stroke-width="6.6" stroke-linecap="round" />
-  <circle cx="74" cy="32" r="4.3" fill="#91f4df" />
-  <circle cx="74" cy="76" r="4.3" fill="#91f4df" />
+  <path d="M69.5 40.5V87.5" fill="none" stroke="#bfe9ff" stroke-width="7.8" stroke-linecap="round" />
+  <path
+    d="M69.5 40.5H78.6C87.1 40.5 94 47.4 94 55.9C94 64.4 87.1 71.3 78.6 71.3H69.5"
+    fill="none"
+    stroke="#bfe9ff"
+    stroke-width="7.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="93.6" cy="55.9" r="4.2" fill="#8ef6db" />
+
   <text
-    x="122"
-    y="57"
-    font-family="Aptos Display, Trebuchet MS, Segoe UI, sans-serif"
-    font-size="46"
+    x="146"
+    y="74"
+    font-family="Aptos Display, Segoe UI, Trebuchet MS, sans-serif"
+    font-size="56"
     font-weight="800"
-    letter-spacing="-0.8"
-    fill="#101827"
+    letter-spacing="-1.5"
+    fill="#0d1737"
   >
     CruxPad
   </text>
-  <text
-    x="124"
-    y="82"
-    font-family="Aptos, Segoe UI, sans-serif"
-    font-size="15"
-    font-weight="600"
-    letter-spacing="0.2"
-    fill="#415069"
-  >
-    Focus. Revise. Ship.
-  </text>
+  <path d="M160 90H388" stroke="url(#cp-accent)" stroke-width="4" stroke-linecap="round" />
+  <circle cx="402" cy="90" r="6" fill="#06b39f" />
 </svg>
