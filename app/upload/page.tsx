@@ -7,7 +7,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { AuthGate } from "@/components/AuthGate";
 import { useAuth } from "@/components/AuthProvider";
-import { generateStudyPackWithPuter } from "@/lib/ai-client";
+import { generateStudyPackWithLocalLLM } from "@/lib/ai-client";
 import { createDocumentRecord, createNoteRecord } from "@/lib/firestore";
 import { normalizeInputText, parseUploadedFile } from "@/lib/parser";
 import type { StudyMode } from "@/lib/types";
@@ -62,8 +62,8 @@ export default function UploadPage() {
         throw new Error("Please upload a file or paste text before generating notes.");
       }
 
-      setStatus("Generating AI study pack with Puter...");
-      const generated = await generateStudyPackWithPuter(sourceText, mode);
+      setStatus("Generating AI study pack with local LLM...");
+      const generated = await generateStudyPackWithLocalLLM(sourceText, mode);
       const finalTitle =
         title.trim() || generated.title || stripExt(originalFileName) || "Untitled Study Pack";
 
@@ -238,4 +238,3 @@ export default function UploadPage() {
     </AppShell>
   );
 }
-
