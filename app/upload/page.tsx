@@ -7,13 +7,23 @@ import { FormEvent, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { AuthGate } from "@/components/AuthGate";
 import { useAuth } from "@/components/AuthProvider";
+import CheatCard from "@/components/CheatCard";
+import GraphView from "@/components/GraphView";
 import { generateStudyPackWithSambaNova } from "@/lib/ai-client";
-import { createDocumentRecord, createNoteRecord } from "@/lib/firestore";
+import { createStudyPackRecords } from "@/lib/firestore";
 import { normalizeInputText, parseUploadedFile } from "@/lib/parser";
-import type { StudyMode } from "@/lib/types";
+import type { GeneratedCheatsheet, StudyMode } from "@/lib/types";
 
 function stripExt(fileName: string) {
   return fileName.replace(/\.[^/.]+$/, "");
+}
+
+interface PendingStudyPack {
+  generated: GeneratedCheatsheet;
+  sourceType: "pdf" | "text";
+  originalFileName: string;
+  characterCount: number;
+  textPreview: string;
 }
 
 export default function UploadPage() {
@@ -25,8 +35,10 @@ export default function UploadPage() {
   const [rawText, setRawText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [pendingResult, setPendingResult] = useState<PendingStudyPack | null>(null);
 
   const sourcePreview = useMemo(() => {
     if (file) {
@@ -38,12 +50,20 @@ export default function UploadPage() {
     return "No source selected yet";
   }, [file, rawText]);
 
+  const previewTitle = pendingResult
+    ? title.trim() ||
+      pendingResult.generated.title ||
+      stripExt(pendingResult.originalFileName) ||
+      "Untitled Study Pack"
+    : "";
+
   async function handleGenerate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user) return;
 
     setBusy(true);
     setError("");
+    setPendingResult(null);
     setStatus("Extracting source text...");
 
     try {
@@ -67,33 +87,65 @@ export default function UploadPage() {
 
       setStatus("Generating AI study pack with SambaNova...");
       const generated = await generateStudyPackWithSambaNova(sourceText, mode);
-      const finalTitle =
-        title.trim() || generated.title || stripExt(originalFileName) || "Untitled Study Pack";
-
-      setStatus("Saving document and cheatsheet...");
-      const documentId = await createDocumentRecord(user.uid, {
-        name: stripExt(originalFileName) || finalTitle,
-        originalFileName,
+      setPendingResult({
+        generated,
         sourceType,
+        originalFileName,
         characterCount: sourceText.length,
         textPreview: sourceText.slice(0, 280),
       });
-
-      const noteId = await createNoteRecord(user.uid, {
-        ...generated,
-        title: finalTitle,
-        mode,
-        documentId,
-      });
-
-      setStatus("Done. Redirecting to notes...");
-      router.push(`/notes?noteId=${noteId}`);
+      setStatus("Preview ready. Review below and choose whether to save to Firestore.");
     } catch (err: any) {
       setError(err?.message || "Generation failed.");
       setStatus("");
     } finally {
       setBusy(false);
     }
+  }
+
+  async function handleSave() {
+    if (!user || !pendingResult) return;
+
+    setSaving(true);
+    setError("");
+    setStatus("Saving document and cheatsheet...");
+
+    try {
+      const finalTitle =
+        title.trim() ||
+        pendingResult.generated.title ||
+        stripExt(pendingResult.originalFileName) ||
+        "Untitled Study Pack";
+
+      const { noteId } = await createStudyPackRecords(user.uid, {
+        document: {
+          name: stripExt(pendingResult.originalFileName) || finalTitle,
+          originalFileName: pendingResult.originalFileName,
+          sourceType: pendingResult.sourceType,
+          characterCount: pendingResult.characterCount,
+          textPreview: pendingResult.textPreview,
+        },
+        note: {
+          ...pendingResult.generated,
+          title: finalTitle,
+          mode: pendingResult.generated.mode,
+        },
+      });
+
+      setStatus("Saved. Redirecting to notes...");
+      router.push(`/notes?noteId=${noteId}`);
+    } catch (err: any) {
+      setError(err?.message || "Save failed.");
+      setStatus("");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleDiscardPreview() {
+    setPendingResult(null);
+    setError("");
+    setStatus("Preview discarded. Nothing was saved to Firestore.");
   }
 
   if (loading) {
@@ -118,7 +170,7 @@ export default function UploadPage() {
   return (
     <AppShell
       title="Upload & Generate"
-      subtitle="Create standard cheatsheets or exam-mode ultra-short revision notes."
+      subtitle="Generate first, review full results, then decide whether to save."
       user={user}
       onSignOut={signOut}
     >
@@ -210,10 +262,10 @@ export default function UploadPage() {
 
           <button
             type="submit"
-            disabled={busy}
+            disabled={busy || saving}
             className="btn-primary w-full px-5 py-3 text-sm disabled:cursor-not-allowed"
           >
-            {busy ? "Generating..." : "Generate Study Pack"}
+            {busy ? "Generating..." : "Generate Preview"}
           </button>
         </form>
 
@@ -229,7 +281,7 @@ export default function UploadPage() {
               <li>- Visual cards for concepts, formulas, and examples</li>
               <li>- Exam mode key points + interview questions</li>
               <li>- Knowledge dependency graph (React Flow)</li>
-              <li>- Persisted notes with rename/delete/share controls</li>
+              <li>- Preview first, then save (or skip) explicitly</li>
             </ul>
           </div>
 
@@ -238,6 +290,147 @@ export default function UploadPage() {
           </Link>
         </aside>
       </div>
+
+      {pendingResult ? (
+        <section className="mt-8 space-y-6">
+          <article className="surface-card-strong rounded-2xl p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-black text-[var(--text-primary)]">{previewTitle}</h2>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Source: {pendingResult.originalFileName} | {pendingResult.characterCount} chars
+                </p>
+              </div>
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  pendingResult.generated.mode === "exam"
+                    ? "border border-[#f8d99d] bg-[var(--amber-soft)] text-[#946300]"
+                    : "border border-[#b9d5ff] bg-[var(--brand-soft)] text-[var(--brand-strong)]"
+                }`}
+              >
+                {pendingResult.generated.mode === "exam" ? "Exam Mode" : "Cheatsheet"}
+              </span>
+            </div>
+
+            <p className="mt-4 text-sm text-[var(--text-secondary)]">
+              Save this generated study pack to Firestore?
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || busy}
+                className="btn-primary px-4 py-2 text-sm disabled:cursor-not-allowed"
+              >
+                {saving ? "Saving..." : "Save to Firestore"}
+              </button>
+              <button
+                type="button"
+                onClick={handleDiscardPreview}
+                disabled={saving || busy}
+                className="rounded-xl border border-[var(--border-soft)] bg-white px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[#f8fbff] disabled:cursor-not-allowed"
+              >
+                Don&apos;t Save
+              </button>
+            </div>
+
+            {pendingResult.generated.revisionNotes.length > 0 ? (
+              <div className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-4">
+                <p className="mb-2 text-sm font-semibold text-[var(--text-primary)]">
+                  Ultra Short Revision
+                </p>
+                <ul className="space-y-1 text-sm text-[var(--text-secondary)]">
+                  {pendingResult.generated.revisionNotes.map((note, index) => (
+                    <li key={`${note}-${index}`}>- {note}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </article>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <CheatCard
+              title="Key Concepts"
+              helper="Core engineering ideas extracted from your source."
+              items={pendingResult.generated.sections.keyConcepts}
+              renderItem={(item, index) => (
+                <article
+                  key={`${item.title}-${index}`}
+                  className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
+                >
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.explanation}</p>
+                </article>
+              )}
+            />
+
+            <CheatCard
+              title="Formulas"
+              helper="Important equations for quick recall."
+              items={pendingResult.generated.sections.formulas}
+              renderItem={(item, index) => (
+                <article
+                  key={`${item.name}-${index}`}
+                  className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
+                >
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{item.name}</p>
+                  <p className="mt-1 rounded-md border border-[#c8eadf] bg-white px-2 py-1 font-mono text-sm text-[#0b6f58]">
+                    {item.formula}
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.description}</p>
+                </article>
+              )}
+            />
+
+            <CheatCard
+              title="Examples"
+              helper="Applied scenarios for conceptual clarity."
+              items={pendingResult.generated.sections.examples}
+              renderItem={(item, index) => (
+                <article
+                  key={`${item.title}-${index}`}
+                  className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
+                >
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{item.title}</p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.detail}</p>
+                </article>
+              )}
+            />
+
+            <CheatCard
+              title="Interview Questions"
+              helper="Likely viva/interview prompts and answer direction."
+              items={pendingResult.generated.sections.interviewQuestions}
+              renderItem={(item, index) => (
+                <article
+                  key={`${item.question}-${index}`}
+                  className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3"
+                >
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{item.question}</p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">{item.answerHint}</p>
+                </article>
+              )}
+            />
+          </div>
+
+          <CheatCard
+            title="Key Points"
+            helper="High-yield points for revision drills."
+            items={pendingResult.generated.sections.keyPoints}
+            renderItem={(item, index) => (
+              <p
+                key={`${item}-${index}`}
+                className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] px-3 py-2 text-sm text-[var(--text-secondary)]"
+              >
+                - {item}
+              </p>
+            )}
+          />
+
+          <GraphView graph={pendingResult.generated.graph} />
+        </section>
+      ) : null}
     </AppShell>
   );
 }

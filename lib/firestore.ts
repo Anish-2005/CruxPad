@@ -28,6 +28,11 @@ interface NoteInput extends GeneratedCheatsheet {
   documentId: string;
 }
 
+interface StudyPackSaveInput {
+  document: DocumentInput;
+  note: Omit<NoteInput, "documentId">;
+}
+
 function requireDb() {
   const db = getFirebaseDb();
   if (!db) {
@@ -135,6 +140,39 @@ export async function createNoteRecord(uid: string, input: NoteInput) {
     updatedAt: serverTimestamp(),
   });
   return docRef.id;
+}
+
+export async function createStudyPackRecords(uid: string, input: StudyPackSaveInput) {
+  const db = requireDb();
+  const documentsRef = collection(db, "users", uid, "documents");
+  const notesRef = collection(db, "users", uid, "notes");
+
+  const documentRef = doc(documentsRef);
+  const noteRef = doc(notesRef);
+  const timestamp = serverTimestamp();
+
+  const batch = writeBatch(db);
+  batch.set(documentRef, {
+    ...input.document,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  });
+
+  batch.set(noteRef, {
+    ...input.note,
+    documentId: documentRef.id,
+    isPublic: false,
+    shareId: null,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  });
+
+  await batch.commit();
+
+  return {
+    documentId: documentRef.id,
+    noteId: noteRef.id,
+  };
 }
 
 export async function renameDocument(uid: string, documentId: string, name: string) {
