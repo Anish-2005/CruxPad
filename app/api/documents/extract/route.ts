@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import pdfParse from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 export const runtime = "nodejs";
 
@@ -35,8 +35,10 @@ export async function POST(request: Request) {
     if (isPdf) {
       const buffer = Buffer.from(await file.arrayBuffer());
       try {
-        const result = await pdfParse(buffer);
+        const parser = new PDFParse({ data: buffer });
+        const result = await parser.getText();
         text = result.text || "";
+        await parser.destroy().catch(() => undefined);
       } catch (error: any) {
         return NextResponse.json(
           {
