@@ -17,12 +17,12 @@ export default function CheatCard<T>({
 }: CheatCardProps<T>) {
   return (
     <section className="surface-card-strong rounded-2xl p-5">
-      <header className="mb-4 flex items-start justify-between gap-3">
+      <header className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="text-lg font-bold text-[var(--text-primary)]">{title}</h3>
           {helper ? <p className="text-xs text-[var(--text-muted)]">{helper}</p> : null}
         </div>
-        <span className="chip">{items.length}</span>
+        <span className="chip w-fit">{items.length}</span>
       </header>
 
       {items.length === 0 ? (
@@ -35,4 +35,3 @@ export default function CheatCard<T>({
     </section>
   );
 }
-

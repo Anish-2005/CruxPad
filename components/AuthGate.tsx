@@ -49,17 +49,17 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
   }
 
   return (
-    <section className="surface-card-strong fade-up mx-auto w-full max-w-md rounded-3xl p-8">
+    <section className="surface-card-strong fade-up mx-auto w-full max-w-md rounded-3xl p-5 sm:p-8">
       <div className="mb-6">
         <p className="chip mb-3 inline-flex">Secure Access</p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">{title}</h1>
+        <h1 className="text-2xl font-black text-[var(--text-primary)] sm:text-3xl">{title}</h1>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">{subtitle}</p>
       </div>
 
-      <div className="inline-flex rounded-xl border border-[var(--border-soft)] bg-[#f6f9ff] p-1 text-sm">
+      <div className="grid w-full grid-cols-2 rounded-xl border border-[var(--border-soft)] bg-[#f6f9ff] p-1 text-sm">
         <button
           type="button"
-          className={`rounded-lg px-4 py-2 font-medium ${
+          className={`tap-target rounded-lg px-3 py-2 font-medium sm:px-4 ${
             mode === "signin"
               ? "bg-[var(--brand)] text-white"
               : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -70,7 +70,7 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
         </button>
         <button
           type="button"
-          className={`rounded-lg px-4 py-2 font-medium ${
+          className={`tap-target rounded-lg px-3 py-2 font-medium sm:px-4 ${
             mode === "signup"
               ? "bg-slate-900 text-white"
               : "text-slate-700 hover:text-slate-900"
@@ -86,7 +86,7 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={busy}
-          className="btn-ghost flex w-full items-center justify-center gap-2 px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-ghost tap-target flex w-full items-center justify-center gap-2 px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +147,7 @@ export function AuthGate({ title, subtitle }: AuthGateProps) {
         <button
           type="submit"
           disabled={busy}
-          className="btn-primary w-full px-4 py-3 text-sm disabled:cursor-not-allowed"
+          className="btn-primary tap-target w-full px-4 py-3 text-sm disabled:cursor-not-allowed"
         >
           {busy
             ? "Working..."

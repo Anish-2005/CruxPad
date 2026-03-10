@@ -14,18 +14,20 @@ export default function BrandLogo({
   tagline = "Engineering Study Workspace",
 }: BrandLogoProps) {
   return (
-    <span className={cn("inline-flex items-center gap-3", className)}>
+    <span className={cn("inline-flex items-center gap-2 sm:gap-3", className)}>
       <Image
         src="/brand-mark.svg"
         alt="CruxPad brand mark"
         width={40}
         height={40}
-        className="h-10 w-10"
+        className="h-9 w-9 sm:h-10 sm:w-10"
       />
       {compact ? null : (
         <span className="leading-tight">
-          <span className="block text-xl font-black tracking-tight text-[var(--text-primary)]">CruxPad</span>
-          <span className="block text-xs text-[var(--text-muted)]">{tagline}</span>
+          <span className="block text-lg font-black tracking-tight text-[var(--text-primary)] sm:text-xl">
+            CruxPad
+          </span>
+          <span className="hidden text-xs text-[var(--text-muted)] sm:block">{tagline}</span>
         </span>
       )}
     </span>

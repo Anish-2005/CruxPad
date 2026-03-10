@@ -35,6 +35,7 @@ body {
 
 body {
   font-family: "Aptos", "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
   background:
     radial-gradient(900px 500px at 2% -10%, #d6e7ff 0%, transparent 55%),
     radial-gradient(700px 450px at 98% 0%, #d7f4ee 0%, transparent 50%),
@@ -91,6 +92,7 @@ a {
 }
 
 .btn-primary {
+  min-height: 44px;
   border-radius: 0.9rem;
   border: 1px solid #124eb4;
   background: linear-gradient(160deg, #1360dd 0%, #0f4eb6 100%);
@@ -113,6 +115,7 @@ a {
 }
 
 .btn-ghost {
+  min-height: 44px;
   border-radius: 0.9rem;
   border: 1px solid var(--border-soft);
   background: #f9fbff;
@@ -155,6 +158,22 @@ a {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.tap-target {
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  .surface-card,
+  .surface-card-strong {
+    border-radius: 1rem;
+  }
+
+  .chip {
+    font-size: 0.66rem;
+    padding: 0.2rem 0.58rem;
+  }
 }
 
 ::-webkit-scrollbar {

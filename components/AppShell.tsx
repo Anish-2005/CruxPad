@@ -34,14 +34,32 @@ export function AppShell({
   return (
     <div className="app-background">
       <header className="sticky top-0 z-30 border-b border-[var(--border-soft)] bg-[#f8fbffdb] backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6">
+          <div className="flex items-center justify-between gap-3">
             <Link href="/">
               <BrandLogo />
             </Link>
           </div>
 
-          <nav className="no-scrollbar flex items-center gap-2 overflow-x-auto rounded-xl border border-[var(--border-soft)] bg-white p-1">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden text-right md:block">
+                <p className="max-w-[180px] truncate text-sm font-semibold text-[var(--text-primary)] sm:max-w-[260px]">
+                  {user.email}
+                </p>
+                <p className="text-xs text-[var(--text-muted)]">Authenticated</p>
+              </div>
+              <button
+                type="button"
+                onClick={onSignOut}
+                className="btn-ghost tap-target inline-flex items-center gap-1.5 px-3 py-2 text-sm"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </button>
+            </div>
+          </div>
+
+          <nav className="no-scrollbar mt-3 flex items-center gap-2 overflow-x-auto rounded-xl border border-[var(--border-soft)] bg-white p-1">
             {navItems.map((item) => {
               const active = pathname.startsWith(item.href);
               return (
@@ -49,7 +67,7 @@ export function AppShell({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "rounded-lg px-3 py-2 text-sm font-semibold transition whitespace-nowrap",
+                    "tap-target whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition",
                     active
                       ? "bg-[var(--brand)] text-white shadow-[0_8px_20px_rgba(15,91,216,0.28)]"
                       : "text-[var(--text-secondary)] hover:bg-[#edf3ff]"
@@ -60,32 +78,15 @@ export function AppShell({
               );
             })}
           </nav>
-
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="max-w-[180px] truncate text-sm font-semibold text-[var(--text-primary)] sm:max-w-[260px]">
-                {user.email}
-              </p>
-              <p className="text-xs text-[var(--text-muted)]">Authenticated</p>
-            </div>
-            <button
-              type="button"
-              onClick={onSignOut}
-              className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
-          </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
-        <section className="surface-card-strong mb-8 rounded-3xl p-6 fade-up">
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+        <section className="surface-card-strong mb-6 rounded-3xl p-4 fade-up sm:mb-8 sm:p-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="chip mb-3 inline-flex items-center">Study Workspace</p>
-              <h1 className="text-3xl font-black tracking-tight text-[var(--text-primary)] sm:text-4xl">
+              <h1 className="text-2xl font-black tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-4xl">
                 {title}
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-[var(--text-secondary)] sm:text-base">

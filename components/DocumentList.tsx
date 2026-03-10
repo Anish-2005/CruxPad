@@ -12,7 +12,7 @@ interface DocumentListProps {
 export function DocumentList({ documents, onRename, onDelete }: DocumentListProps) {
   return (
     <div className="surface-card-strong rounded-2xl p-5">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">Uploaded Documents</h2>
         <span className="chip">{documents.length} total</span>
       </div>
@@ -27,10 +27,10 @@ export function DocumentList({ documents, onRename, onDelete }: DocumentListProp
         {documents.map((document) => (
           <article
             key={document.id}
-            className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-4"
+            className="rounded-xl border border-[var(--border-soft)] bg-[#f8fbff] p-3 sm:p-4"
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
                 <h3 className="font-semibold text-[var(--text-primary)]">{document.name}</h3>
                 <p className="text-xs text-[var(--text-muted)]">
                   {document.sourceType.toUpperCase()} - {document.characterCount} chars -{" "}
@@ -38,18 +38,18 @@ export function DocumentList({ documents, onRename, onDelete }: DocumentListProp
                 </p>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
                 <button
                   type="button"
                   onClick={() => onRename(document.id, document.name)}
-                  className="btn-ghost px-3 py-1.5 text-xs"
+                  className="btn-ghost tap-target flex-1 px-3 py-1.5 text-xs sm:flex-none"
                 >
                   Rename
                 </button>
                 <button
                   type="button"
                   onClick={() => onDelete(document.id)}
-                  className="rounded-lg border border-[#ffc8d2] bg-[var(--rose-soft)] px-3 py-1.5 text-xs font-semibold text-[#9f2139] transition hover:brightness-95"
+                  className="tap-target flex-1 rounded-lg border border-[#ffc8d2] bg-[var(--rose-soft)] px-3 py-1.5 text-xs font-semibold text-[#9f2139] transition hover:brightness-95 sm:flex-none"
                 >
                   Delete
                 </button>
@@ -65,4 +65,3 @@ export function DocumentList({ documents, onRename, onDelete }: DocumentListProp
     </div>
   );
 }
-

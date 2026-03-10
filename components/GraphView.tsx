@@ -85,7 +85,7 @@ export default function GraphView({ graph }: GraphViewProps) {
           No graph nodes available.
         </p>
       ) : (
-        <div className="h-[420px] w-full overflow-hidden rounded-xl border border-[var(--border-soft)]">
+        <div className="h-[320px] w-full overflow-hidden rounded-xl border border-[var(--border-soft)] sm:h-[380px] lg:h-[420px]">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -107,4 +107,3 @@ export default function GraphView({ graph }: GraphViewProps) {
     </section>
   );
 }
-

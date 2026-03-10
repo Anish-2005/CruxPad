@@ -22,7 +22,7 @@ export function NotesList({
 }: NotesListProps) {
   return (
     <div className="surface-card-strong rounded-2xl p-5">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">Generated Cheatsheets</h2>
         <span className="chip">{notes.length} total</span>
       </div>
@@ -40,14 +40,18 @@ export function NotesList({
           return (
             <article
               key={note.id}
-              className={`rounded-xl border p-4 transition ${
+              className={`rounded-xl border p-3 transition sm:p-4 ${
                 isActive
                   ? "border-[#b9d5ff] bg-[var(--brand-soft)]/70"
                   : "border-[var(--border-soft)] bg-[#f8fbff] hover:border-[#c3d8f3]"
               }`}
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <button type="button" onClick={() => onSelect(note.id)} className="text-left">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <button
+                  type="button"
+                  onClick={() => onSelect(note.id)}
+                  className="w-full text-left sm:w-auto"
+                >
                   <h3 className="font-semibold text-[var(--text-primary)]">{note.title}</h3>
                   <p className="text-xs text-[var(--text-muted)]">
                     {note.mode === "exam" ? "Exam Mode" : "Cheatsheet"} -{" "}
@@ -55,25 +59,25 @@ export function NotesList({
                   </p>
                 </button>
 
-                <div className="flex gap-2">
+                <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
                   <button
                     type="button"
                     onClick={() => onShare(note.id)}
-                    className="rounded-lg border border-[#b8e9db] bg-[var(--mint-soft)] px-3 py-1.5 text-xs font-semibold text-[#0b6f58] transition hover:brightness-95"
+                    className="tap-target flex-1 rounded-lg border border-[#b8e9db] bg-[var(--mint-soft)] px-3 py-1.5 text-xs font-semibold text-[#0b6f58] transition hover:brightness-95 sm:flex-none"
                   >
                     Share
                   </button>
                   <button
                     type="button"
                     onClick={() => onRename(note.id, note.title)}
-                    className="btn-ghost px-3 py-1.5 text-xs"
+                    className="btn-ghost tap-target flex-1 px-3 py-1.5 text-xs sm:flex-none"
                   >
                     Rename
                   </button>
                   <button
                     type="button"
                     onClick={() => onDelete(note.id)}
-                    className="rounded-lg border border-[#ffc8d2] bg-[var(--rose-soft)] px-3 py-1.5 text-xs font-semibold text-[#9f2139] transition hover:brightness-95"
+                    className="tap-target flex-1 rounded-lg border border-[#ffc8d2] bg-[var(--rose-soft)] px-3 py-1.5 text-xs font-semibold text-[#9f2139] transition hover:brightness-95 sm:flex-none"
                   >
                     Delete
                   </button>
@@ -86,4 +90,3 @@ export function NotesList({
     </div>
   );
 }
-
